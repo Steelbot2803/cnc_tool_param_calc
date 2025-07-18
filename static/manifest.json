@@ -1,0 +1,12 @@
+{
+  "name": "CNC Tool Calculator",
+  "short_name": "CNC Calc",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d47a1",
+  "icons": [
+    { "src": "/static/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/static/icon-512.png", "type": "image/png", "sizes": "512x512" }
+  ]
+}
