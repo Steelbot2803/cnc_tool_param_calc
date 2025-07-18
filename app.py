@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, send_file
 from io import BytesIO
-from util.calculations import calculate_all
-from util.pdf_generator import generate_pdf_report
+from utils.calculations import calculate_all
+from utils.pdf_generator import generate_pdf_report
 from data.material_data import MATERIAL_DATA
 from data.profiles import PROFILES
 from data.tool_types import TOOL_TYPES
