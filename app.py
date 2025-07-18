@@ -70,7 +70,7 @@ def index():
         if fz_mode == "manual":
             fz = float(request.form.get("feed_per_tooth", "0.1"))
         else:
-            fz = feed_data["fz"]
+            fz = FEED_TABLE[tool_type][material]
 
 
         try:
