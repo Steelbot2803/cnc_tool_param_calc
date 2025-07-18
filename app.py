@@ -1,201 +1,227 @@
-# CNC Tool Calculator - Flask PWA App
-
-import math
-from flask import Flask, render_template_string, request, send_from_directory
+from flask import Flask, request, render_template_string, make_response, send_file
+import csv
+import io
+import json
+from datetime import datetime
+import weasyprint
 
 app = Flask(__name__)
 
-# Cutting speed reference table (flood cooled, m/min)
-cutting_speeds = {
-    "EN24": {
-        "HSS": (30, 40),
-        "Carbide": (120, 180)
-    },
-    "17-4PH": {
-        "HSS": (20, 30),
-        "Carbide": (100, 150)
-    }
+# Feed per tooth values in mm for each tool type and material
+FEED_TABLE = {
+    "Drill": {"EN24": 0.1, "17-4PH": 0.08},
+    "Endmill": {"EN24": 0.12, "17-4PH": 0.10},
+    "Face Mill": {"EN24": 0.25, "17-4PH": 0.2},
+    "Ball Mill": {"EN24": 0.05, "17-4PH": 0.04},
+    "Corner Mill": {"EN24": 0.15, "17-4PH": 0.13},
+    "Chamfer Mill": {"EN24": 0.08, "17-4PH": 0.07},
+    "Taper Mill": {"EN24": 0.07, "17-4PH": 0.06}
 }
 
-# Presets for feed per tooth (mm/tooth)
-fz_presets = {
-    "roughing": 0.12,
-    "finishing": 0.05
+VC_TABLE = {
+    "Drill": {"EN24": 80, "17-4PH": 60},
+    "Endmill": {"EN24": 120, "17-4PH": 90},
+    "Face Mill": {"EN24": 150, "17-4PH": 110},
+    "Ball Mill": {"EN24": 100, "17-4PH": 75},
+    "Corner Mill": {"EN24": 110, "17-4PH": 85},
+    "Chamfer Mill": {"EN24": 90, "17-4PH": 70},
+    "Taper Mill": {"EN24": 95, "17-4PH": 72}
 }
 
-# Tool life estimation constants (simplified Taylor's Tool Life Equation)
-taylor_constants = {
-    "HSS": (80, 0.125),     # C, n
-    "Carbide": (300, 0.25)
+TOOL_MATERIAL_FACTORS = {
+    "Carbide": 1.0,
+    "HSS": 0.6,
+    "Ceramic": 1.5
 }
-
-def get_cutting_speed(material, tool_type):
-    speeds = cutting_speeds.get(material, {}).get(tool_type)
-    if not speeds:
-        raise ValueError("Invalid combination of material/tool type.")
-    return sum(speeds) / 2  # Use average value
-
-def calculate_spindle_speed(vc, diameter):
-    return (1000 * vc) / (math.pi * diameter)
-
-def calculate_feedrate(n, fz, flutes):
-    return n * fz * flutes
-
-def estimate_tool_life(vc, tool_type):
-    C, n = taylor_constants.get(tool_type, (0, 0))
-    if C == 0:
-        return "Unknown"
-    return round((C / vc) ** (1 / n), 2)  # in minutes
-
-def calculate_vc_for_tool_life(tool_type, desired_life):
-    C, n = taylor_constants.get(tool_type, (0, 0))
-    if C == 0 or desired_life <= 0:
-        return None
-    return round(C / (desired_life ** n), 2)
-
-@app.route('/static/<path:filename>')
-def static_files(filename):
-    return send_from_directory('static', filename)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    result = None
+    results = {}
+    chart_data = {}
+    tool_types = list(FEED_TABLE.keys())
+    report_mode = request.form.get("report_mode", "basic")
+
     if request.method == 'POST':
-        material = request.form['material']
-        tool_type = request.form['tool_type']
-        diameter = float(request.form['diameter'])
-        flutes = int(request.form['flutes'])
-        desired_life = float(request.form.get('desired_life') or 0)
+        if request.form.get("export") == "csv":
+            output = io.StringIO()
+            writer = csv.writer(output)
+            writer.writerow(["Parameter", "Value"])
+            for key in request.form:
+                if key.startswith("csv_"):
+                    writer.writerow([key[4:], request.form[key]])
+            response = make_response(output.getvalue())
+            response.headers["Content-Disposition"] = "attachment; filename=cnc_results.csv"
+            response.headers["Content-type"] = "text/csv"
+            return response
+
+        if request.form.get("export") == "pdf":
+            rendered_html = render_template_string(REPORT_TEMPLATE, results=json.loads(request.form['results']), chart_data=json.loads(request.form['chart_data']))
+            pdf = weasyprint.HTML(string=rendered_html).write_pdf()
+            return send_file(io.BytesIO(pdf), mimetype='application/pdf', as_attachment=True, download_name='cnc_report.pdf')
+
+        tool_type = request.form.get("tool_type")
+        tool_material = request.form.get("tool_material")
+        material = request.form.get("material")
+        diameter = float(request.form.get("diameter"))
+        teeth = int(request.form.get("teeth"))
         fz_mode = request.form.get("fz_mode", "auto")
-        if fz_mode == "manual":
-            fz = float(request.form.get("feed_per_tooth", "0.1"))
+        tool_life_input = request.form.get("tool_life")
+
+        vc_base = VC_TABLE.get(tool_type, {}).get(material, 100)
+        vc_factor = TOOL_MATERIAL_FACTORS.get(tool_material, 1.0)
+        vc = vc_base * vc_factor
+
+        feed_data = FEED_TABLE.get(tool_type, {}).get(material, 0.1)
+        fz = float(request.form.get("feed_per_tooth", 0.1)) if fz_mode == "manual" else feed_data
+
+        if tool_life_input:
+            tool_life = float(tool_life_input)
+            tool_life = min(max(tool_life, 5), 60)
+            adjusted_vc = vc * (30 / tool_life) ** 0.2
+            rpm = (adjusted_vc * 1000) / (3.1416 * diameter)
+            estimated_life = tool_life
         else:
-            fz = FEED_TABLE[tool_type][material]
+            adjusted_vc = vc
+            rpm = (vc * 1000) / (3.1416 * diameter)
+            estimated_life = 30
 
+        feedrate = rpm * teeth * fz
+        chipload = fz
+        force = feedrate * 0.005
+        power = (force * vc) / 60
 
-        try:
-            if desired_life > 0:
-                vc = calculate_vc_for_tool_life(tool_type, desired_life)
-                if vc is None:
-                    raise ValueError("Invalid tool type or desired tool life.")
-            else:
-                vc = get_cutting_speed(material, tool_type)
-            n = calculate_spindle_speed(vc, diameter)
-            feedrate = calculate_feedrate(n, fz, flutes)
-            life = estimate_tool_life(vc, tool_type)
+        results = {
+            "Cutting Speed (Vc) [m/min]": round(adjusted_vc, 2),
+            "Spindle Speed (RPM)": int(rpm),
+            "Feed per Tooth (mm)": round(chipload, 3),
+            "Feedrate (mm/min)": round(feedrate, 2),
+            "Estimated Tool Life (min)": round(estimated_life, 2)
+        }
 
-            result = {
-                'Vc': round(vc, 2),
-                'RPM': round(n),
-                'Feedrate': round(feedrate, 2),
-                'ToolLife': life
-            }
-        except Exception as e:
-            result = {'error': str(e)}
+        if report_mode == "detailed":
+            results.update({
+                "Estimated Force (N)": round(force, 2),
+                "Estimated Power (W)": round(power, 2)
+            })
 
-    return render_template_string(TEMPLATE, result=result)
+        chart_data = {
+            "RPM": int(rpm),
+            "Feedrate": round(feedrate, 2),
+            "Tool Life": round(estimated_life, 2),
+            "Power (W)": round(power, 2)
+        }
+
+        return render_template_string(TEMPLATE, results=results, chart_data=chart_data, tool_types=tool_types)
+
+    return render_template_string(TEMPLATE, results=results, chart_data=chart_data, tool_types=tool_types)
+
+REPORT_TEMPLATE = """
+<h1>CNC Tool Report</h1>
+<ul>
+{% for key, value in results.items() %}
+    <li><strong>{{ key }}:</strong> {{ value }}</li>
+{% endfor %}
+</ul>
+"""
 
 TEMPLATE = '''
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CNC Tool Calculator</title>
-  <link rel="manifest" href="/static/manifest.json">
-  <meta name="theme-color" content="#0d47a1">
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 1rem;
-      margin: 0;
-      background: #f7f7f7;
-    }
-    form {
-      max-width: 400px;
-      margin: 0 auto;
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
-    }
-    input, select, button {
-      width: 100%;
-      margin-bottom: 1rem;
-      padding: 0.5rem;
-      font-size: 1rem;
-    }
-    h2, h3 {
-      text-align: center;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      margin-bottom: 0.5rem;
-    }
-  </style>
-  <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const modeSelect = document.querySelector("select[name='fz_mode']");
-    const fzInput = document.querySelector("input[name='feed_per_tooth']").closest("label");
-
-    function toggleFzField() {
-      if (modeSelect.value === "manual") {
-        fzInput.style.display = "block";
-      } else {
-        fzInput.style.display = "none";
-      }
-    }
-
-    modeSelect.addEventListener("change", toggleFzField);
-    toggleFzField(); // run on load
-  });
-</script>
-<script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/static/service-worker.js');
-    }
-  </script>
+    <title>CNC Tool Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 1rem; max-width: 600px; margin: auto; }
+        label { display: block; margin-top: 1em; }
+        input, select, button { width: 100%; padding: 0.5em; margin-top: 0.3em; }
+        canvas { width: 100%; max-width: 100%; height: auto; }
+    </style>
 </head>
 <body>
-  <h2>CNC Tool Calculator</h2>
-  <form method="POST">
-    <label>Tool Diameter (mm): <input type="number" step="0.01" name="diameter" required></label>
-    <label>Number of Flutes: <input type="number" name="flutes" required></label>
-    <label>Feed Mode:
-  <select name="fz_mode">
-    <option value="auto">Auto (material/tool based)</option>
-    <option value="manual">Manual (use input below)</option>
-  </select>
-</label>
-<label>Feed per Tooth (mm): <input type="number" step="0.01" name="feed_per_tooth"></label>
-    <label>Tool Material:
-      <select name="tool_type">
-        <option value="HSS">HSS</option>
-        <option value="Carbide">Carbide</option>
-        <option value="Ceramic">Ceramic</option>
-      </select>
-    </label>
-    <label>Work Material:
-      <select name="material">
-        <option value="EN24">EN24</option>
-        <option value="17-4PH">17-4PH</option>
-      </select>
-    </label>
-    <label>Desired Tool Life (min): <input type="number" name="desired_life" step="0.1"></label>
-    <button type="submit">Calculate</button>
-  </form>
+    <h2>CNC Tool Parameter Calculator</h2>
+    <form method="POST">
+        <label>Tool Type:
+            <select name="tool_type">
+                {% for tool in tool_types %}<option value="{{ tool }}">{{ tool }}</option>{% endfor %}
+            </select>
+        </label>
+        <label>Tool Material:
+            <select name="tool_material">
+                <option>Carbide</option><option>HSS</option><option>Ceramic</option>
+            </select>
+        </label>
+        <label>Job Material:
+            <select name="material">
+                <option>EN24</option><option>17-4PH</option>
+            </select>
+        </label>
+        <label>Tool Diameter (mm):
+            <input name="diameter" type="number" step="0.1" required>
+        </label>
+        <label>Number of Teeth:
+            <input name="teeth" type="number" required>
+        </label>
+        <label>Feed Mode:
+            <select name="fz_mode">
+                <option value="auto">Auto (based on tool + material)</option>
+                <option value="manual">Manual</option>
+            </select>
+        </label>
+        <label>Feed per Tooth (manual, mm):
+            <input name="feed_per_tooth" type="number" step="0.01">
+        </label>
+        <label>Tool Life Target (min, optional, 5-60):
+            <input name="tool_life" type="number" step="1">
+        </label>
+        <label>Report Mode:
+            <select name="report_mode">
+                <option value="basic">Basic</option>
+                <option value="detailed">Detailed</option>
+            </select>
+        </label>
+        <button type="submit">Calculate</button>
+    </form>
 
-  {% if results %}
+    {% if results %}
     <h3>Results</h3>
     <ul>
-      {% for key, value in results.items() %}
-        <li><strong>{{ key }}</strong>: {{ value }}</li>
-      {% endfor %}
+        {% for key, value in results.items() %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+        {% endfor %}
     </ul>
-  {% endif %}
+
+    <canvas id="myChart"></canvas>
+    <script>
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys({{ chart_data|tojson }}),
+                datasets: [{
+                    label: 'CNC Results',
+                    data: Object.values({{ chart_data|tojson }}),
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                }]
+            }
+        });
+    </script>
+
+    <form method="POST">
+        <input type="hidden" name="export" value="csv">
+        {% for key, value in results.items() %}<input type="hidden" name="csv_{{ key }}" value="{{ value }}">{% endfor %}
+        <button type="submit">Download CSV</button>
+    </form>
+    <form method="POST">
+        <input type="hidden" name="export" value="pdf">
+        <input type="hidden" name="results" value='{{ results|tojson }}'>
+        <input type="hidden" name="chart_data" value='{{ chart_data|tojson }}'>
+        <button type="submit">Download PDF</button>
+    </form>
+    {% endif %}
 </body>
 </html>
 '''
+
+if __name__ == '__main__':
+    app.run(debug=True, port=10000)
