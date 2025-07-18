@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from utils.calculations import *
 from utils.pdf_generator import *
 from data.tool_types import *
-from data.materials_data import *
+from data.material_data import *
 import os
 
 app = Flask(__name__)
