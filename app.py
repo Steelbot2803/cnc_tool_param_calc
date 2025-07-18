@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, send_file
 from io import BytesIO
-from calculations import calculate_all
-from pdf_generator import generate_pdf_report
-from material_data import MATERIAL_DATA
-from profiles import PROFILES
-from tool_types import TOOL_TYPES
+from util.calculations import calculate_all
+from util.pdf_generator import generate_pdf_report
+from data.material_data import MATERIAL_DATA
+from data.profiles import PROFILES
+from data.tool_types import TOOL_TYPES
 
 app = Flask(__name__)
 
