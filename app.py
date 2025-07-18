@@ -89,14 +89,15 @@ def index():
         except Exception as e:
             result = {'error': str(e)}
 
-    return render_template_string(template, result=result)
+    return render_template_string(TEMPLATE, result=result)
 
-template = """
-<!doctype html>
-<html lang=\"en\">
+TEMPLATE = '''
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <title>CNC Tool Calculator</title>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CNC Tool Calculator</title>
   <link rel="manifest" href="/static/manifest.json">
   <meta name="theme-color" content="#0d47a1">
   <style>
@@ -132,13 +133,65 @@ template = """
     }
   </style>
   <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modeSelect = document.querySelector("select[name='fz_mode']");
+    const fzInput = document.querySelector("input[name='feed_per_tooth']").closest("label");
+
+    function toggleFzField() {
+      if (modeSelect.value === "manual") {
+        fzInput.style.display = "block";
+      } else {
+        fzInput.style.display = "none";
+      }
+    }
+
+    modeSelect.addEventListener("change", toggleFzField);
+    toggleFzField(); // run on load
+  });
+</script>
+<script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/static/service-worker.js');
     }
   </script>
 </head>
-</html>
-"""
+<body>
+  <h2>CNC Tool Calculator</h2>
+  <form method="POST">
+    <label>Tool Diameter (mm): <input type="number" step="0.01" name="diameter" required></label>
+    <label>Number of Flutes: <input type="number" name="flutes" required></label>
+    <label>Feed Mode:
+  <select name="fz_mode">
+    <option value="auto">Auto (material/tool based)</option>
+    <option value="manual">Manual (use input below)</option>
+  </select>
+</label>
+<label>Feed per Tooth (mm): <input type="number" step="0.01" name="feed_per_tooth"></label>
+    <label>Tool Material:
+      <select name="tool_type">
+        <option value="HSS">HSS</option>
+        <option value="Carbide">Carbide</option>
+        <option value="Ceramic">Ceramic</option>
+      </select>
+    </label>
+    <label>Work Material:
+      <select name="material">
+        <option value="EN24">EN24</option>
+        <option value="17-4PH">17-4PH</option>
+      </select>
+    </label>
+    <label>Desired Tool Life (min): <input type="number" name="desired_life" step="0.1"></label>
+    <button type="submit">Calculate</button>
+  </form>
 
-if __name__ == '__main__':
-    app.run(debug=True)
+  {% if results %}
+    <h3>Results</h3>
+    <ul>
+      {% for key, value in results.items() %}
+        <li><strong>{{ key }}</strong>: {{ value }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</body>
+</html>
+'''
