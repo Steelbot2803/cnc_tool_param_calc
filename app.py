@@ -34,6 +34,38 @@ TOOL_MATERIAL_FACTORS = {
     "Ceramic": 1.5
 }
 
+@app.route('/.well-known/assetlinks.json')
+def asset_links():
+    return {
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target": {
+            "namespace": "web",
+            "site": "https://cnc-tool-param-calc.onrender.com",
+            "package_name": "com.example.cnctoolcalc",
+            "sha256_cert_fingerprints": [
+                "YOUR_SHA256_CERT_HERE"
+            ]
+        }
+    }
+
+@app.route('/manifest.json')
+def manifest():
+    return app.response_class(
+        response=json.dumps({
+            "name": "CNC Tool Calculator",
+            "short_name": "CNC Calc",
+            "start_url": "/",
+            "display": "standalone",
+            "background_color": "#111",
+            "theme_color": "#111",
+            "icons": [
+                {"src": "/static/icon-192.png", "sizes": "192x192", "type": "image/png"},
+                {"src": "/static/icon-512.png", "sizes": "512x512", "type": "image/png"}
+            ]
+        }),
+        mimetype='application/json'
+    )
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     results = {}
@@ -130,15 +162,47 @@ TEMPLATE = '''
 <head>
     <title>CNC Tool Calculator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/static/icon-192.png" type="image/png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: sans-serif; padding: 1rem; max-width: 600px; margin: auto; }
+        body {
+            font-family: sans-serif;
+            padding: 1rem;
+            max-width: 600px;
+            margin: auto;
+            background-color: #111;
+            color: #f0f0f0;
+        }
         label { display: block; margin-top: 1em; }
-        input, select, button { width: 100%; padding: 0.5em; margin-top: 0.3em; }
-        canvas { width: 100%; max-width: 100%; height: auto; }
+        input, select, button {
+            width: 100%;
+            padding: 0.5em;
+            margin-top: 0.3em;
+            background-color: #222;
+            color: white;
+            border: 1px solid #444;
+        }
+        button {
+            background-color: #333;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #444;
+        }
+        canvas {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            background: white;
+        }
+        h2, h3 {
+            color: #fff;
+        }
     </style>
 </head>
 <body>
+    <img src="/static/icon-192.png" width="64" height="64" alt="App Icon">
     <h2>CNC Tool Parameter Calculator</h2>
     <form method="POST">
         <label>Tool Type:
@@ -201,7 +265,7 @@ TEMPLATE = '''
                 datasets: [{
                     label: 'CNC Results',
                     data: Object.values({{ chart_data|tojson }}),
-                    backgroundColor: 'rgba(54, 162, 235, 0.6)'
+                    backgroundColor: 'rgba(100, 200, 255, 0.6)'
                 }]
             }
         });
