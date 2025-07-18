@@ -65,9 +65,13 @@ def index():
         tool_type = request.form['tool_type']
         diameter = float(request.form['diameter'])
         flutes = int(request.form['flutes'])
-        fz_mode = request.form['fz_mode']
         desired_life = float(request.form.get('desired_life') or 0)
-        fz = float(request.form['fz']) if fz_mode == 'manual' else fz_presets[fz_mode]
+        fz_mode = request.form.get("fz_mode", "auto")
+        if fz_mode == "manual":
+            fz = float(request.form.get("feed_per_tooth", "0.1"))
+        else:
+            fz = feed_data["fz"]
+
 
         try:
             if desired_life > 0:
