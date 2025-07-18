@@ -1,12 +1,21 @@
 {
-  "name": "CNC Tool Calculator",
-  "short_name": "CNC Calc",
+  "name": "CNC Tool Parameter Calculator",
+  "short_name": "CNC ToolCalc",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0d47a1",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait",
   "icons": [
-    { "src": "/static/icon-192.png", "type": "image/png", "sizes": "192x192" },
-    { "src": "/static/icon-512.png", "type": "image/png", "sizes": "512x512" }
+    {
+      "src": "/static/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
   ]
 }

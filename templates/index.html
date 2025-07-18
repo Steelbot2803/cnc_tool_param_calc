@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="p-4 md:p-8">
+  <form method="POST">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <!-- Profile and Tool Type -->
+      <div>
+        <label class="text-white">User Profile</label>
+        <select name="profile" class="w-full p-2 rounded bg-gray-800 text-white">
+          {% for p in profiles %}
+          <option value="{{ p }}" {% if p == selected_profile %}selected{% endif %}>{{ p }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="text-white">Tool Type</label>
+        <select name="tool_type" class="w-full p-2 rounded bg-gray-800 text-white">
+          {% for t in tool_types %}
+          <option value="{{ t }}" {% if t == selected_tool %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Material and Tool Material -->
+      <div>
+        <label class="text-white">Work Material</label>
+        <select name="material" class="w-full p-2 rounded bg-gray-800 text-white">
+          {% for m in materials %}
+          <option value="{{ m }}">{{ m }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label class="text-white">Tool Material</label>
+        <select name="tool_material" class="w-full p-2 rounded bg-gray-800 text-white">
+          <option value="Carbide">Carbide</option>
+          <option value="HSS">HSS</option>
+        </select>
+      </div>
+
+      <!-- Tool Geometry -->
+      <div>
+        <label class="text-white">Tool Diameter (mm)</label>
+        <input type="number" step="0.01" name="tool_diameter" class="w-full p-2 rounded bg-gray-800 text-white">
+      </div>
+      <div>
+        <label class="text-white">Flutes (Cutting Edges)</label>
+        <input type="number" name="flutes" class="w-full p-2 rounded bg-gray-800 text-white">
+      </div>
+      <div>
+        <label class="text-white">ap (Axial Depth, mm)</label>
+        <input type="number" step="0.01" name="ap" class="w-full p-2 rounded bg-gray-800 text-white">
+      </div>
+      <div>
+        <label class="text-white">ae (Radial Depth, mm)</label>
+        <input type="number" step="0.01" name="ae" class="w-full p-2 rounded bg-gray-800 text-white">
+      </div>
+
+      <!-- Optional Overrides -->
+      <div>
+        <label class="text-white">Override Cutting Speed Vc (m/min)</label>
+        <input type="number" step="0.1" name="vc" class="w-full p-2 rounded bg-gray-800 text-white">
+      </div>
+      <div>
+        <label class="text-white">Override Feed per Tooth fz (mm)</label>
+        <input type="number" step="0.01" name="fz" class="w-full p-2 rounded bg-gray-800 text-white">
+      </div>
+      <div>
+        <label class="text-white">Target Tool Life (min, optional)</label>
+        <input type="number" step="1" name="tool_life" class="w-full p-2 rounded bg-gray-800 text-white">
+      </div>
+
+      <!-- Report Type -->
+      <div>
+        <label class="text-white">Report Type</label>
+        <select name="report_type" class="w-full p-2 rounded bg-gray-800 text-white">
+          <option value="basic">Basic</option>
+          <option value="detailed">Detailed</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mt-6 flex gap-4">
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Calculate</button>
+      <button name="export_pdf" value="true" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Export PDF</button>
+    </div>
+  </form>
+
+  {% if result %}
+    {% if result.error %}
+      <p class="text-red-500 mt-4">Error: {{ result.error }}</p>
+    {% else %}
+      <div class="mt-8 text-white">
+        <h2 class="text-xl font-bold mb-2">Calculation Results:</h2>
+        <ul class="space-y-1">
+          {% for k, v in result.items() %}
+            <li><strong>{{ k }}:</strong> {{ v }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  {% endif %}
+</section>
+{% endblock %}

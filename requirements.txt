@@ -1,8 +1,7 @@
-flask>=2.0
-gunicorn>=21.0
-weasyprint>=61.0
-cairocffi
-tinycss2
-cssselect2
-html5lib
-Pyphen
+Flask>=3.0.0
+gunicorn>=21.2.0
+reportlab>=4.0.8         # PDF generation
+matplotlib>=3.8.4        # For chart visualizations
+numpy>=1.26.4            # Used in power/force estimation
+pandas>=2.2.2            # Optional: helpful if we expand to handle tabular exports or comparisons
+openpyxl>=3.1.2
