@@ -1,63 +1,73 @@
 from flask import Flask, render_template, request
-from utils.calculations import calculate_all
-from utils.pdf_generator import generate_pdf_report
-from data.tool_types import TOOL_TYPES
-from data.material_data import MATERIAL_DATA
+from utils.calculations import *
+from utils.pdf_generator import *
+from data.tool_types import *
+from data.materials import *
 import os
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
+@app.route('/', methods=['GET', 'POST'])
 def index():
     result = None
     tool_types_list = list(tool_types.keys())
-    materials = list(material_defaults.keys())
-    recommended_fz = 0.05
-    recommended_vc = 120
 
-    if request.method == "POST":
-        tool_type = request.form.get("tool_type")
-        material = request.form.get("material")
-        tool_material = request.form.get("tool_material", "Carbide")
-        tool_diameter = float(request.form.get("tool_diameter", 0) or 0)
-        flutes = int(request.form.get("flutes", 2))
-        ap = float(request.form.get("ap", 0))
-        ae = float(request.form.get("ae", 0))
+    if request.method == 'POST':
+        tool_type = request.form['tool_type']
+        tool_material = request.form['tool_material']
+        material = request.form['material']
 
-        fz_raw = request.form.get("fz", "").strip()
-        vc_raw = request.form.get("vc", "").strip()
-        tool_life_raw = request.form.get("tool_life", "").strip()
+        # Extract user inputs or fall back to recommended defaults
+        defaults = tool_types.get(tool_type, {})
+        recommended_fz = defaults.get("recommended_fz", {}).get(tool_material, 0.05)
+        recommended_vc = defaults.get("recommended_vc", {}).get(tool_material, 120)
+        recommended_ap = defaults.get("recommended_ap", 1.0)
+        recommended_ae_ratio = defaults.get("recommended_ae_ratio", 0.5)
+        recommended_flutes = defaults.get("default_flutes", 2)
+        recommended_tool_diameter = defaults.get("default_diameter", 10.0)
 
-        recommended_fz = tool_types.get(tool_type, {}).get("recommended_fz", {}).get(tool_material, 0.05)
-        recommended_vc = tool_types.get(tool_type, {}).get("recommended_vc", {}).get(tool_material, 120)
+        tool_diameter = float(request.form.get("tool_diameter", recommended_tool_diameter))
+        flutes = int(request.form.get("flutes", recommended_flutes))
+        fz = float(request.form.get("fz", recommended_fz))
+        vc = float(request.form.get("vc", recommended_vc))
+        ap = float(request.form.get("ap", recommended_ap))
+        ae = float(request.form.get("ae", recommended_ae_ratio * tool_diameter))
 
-        fz = float(fz_raw) if fz_raw else recommended_fz
-        vc = float(vc_raw) if vc_raw else recommended_vc
-        tool_life_override = float(tool_life_raw) if tool_life_raw else None
+        tool_life_input = request.form.get("tool_life")
+        tool_life = float(tool_life_input) if tool_life_input else None
 
-        result = calculate_all(
-            profile=None,
-            tool_type=tool_type,
-            material=material,
-            tool_diameter=tool_diameter,
-            flutes=flutes,
-            ap=ap,
-            ae=ae,
-            vc_override=vc,
-            fz_override=fz,
-            tool_life_override=tool_life_override,
-            tool_material=tool_material
-        )
+        spindle_speed = calculate_spindle_speed(vc, tool_diameter)
+        feedrate = calculate_feedrate(fz, spindle_speed, flutes)
+        mrr = calculate_mrr(ap, ae, feedrate)
+        Kc = get_force_coefficient(material)
+        force = calculate_cutting_force(Kc, ap, ae)
+        power = calculate_cutting_power(force, feedrate)
 
-    return render_template(
-        "index.html",
-        result=result,
+        tool_material_factor = get_tool_material_factor(tool_material)
+        material_factor = get_profile_factor("Expert")  # Default to expert for now
+        estimated_tool_life = tool_life or estimate_tool_life(vc, fz, tool_material_factor, material_factor)
+
+        result = {
+            "Cutting Speed (Vc)": f"{vc:.2f} m/min",
+            "Spindle Speed (RPM)": f"{spindle_speed:.0f}",
+            "Feedrate": f"{feedrate:.2f} mm/min",
+            "Material Removal Rate": f"{mrr:.2f} mm³/min",
+            "Cutting Force": f"{force:.2f} N",
+            "Cutting Power": f"{power:.2f} kW",
+            "Estimated Tool Life": f"{estimated_tool_life:.2f} minutes"
+        }
+
+    return render_template('index.html',
         tool_types=tool_types_list,
         materials=materials,
-        recommended_fz=recommended_fz,
-        recommended_vc=recommended_vc
+        result=result,
+        recommended_fz=recommended_fz if request.method == 'POST' else '',
+        recommended_vc=recommended_vc if request.method == 'POST' else '',
+        recommended_ap=recommended_ap if request.method == 'POST' else '',
+        recommended_ae=recommended_ae_ratio * recommended_tool_diameter if request.method == 'POST' else '',
+        recommended_flutes=recommended_flutes if request.method == 'POST' else '',
+        recommended_tool_diameter=recommended_tool_diameter if request.method == 'POST' else ''
     )
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, host="0.0.0.0", port=port)
+if __name__ == '__main__':
+    app.run(debug=True)
