@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request
 from utils.calculations import calculate_all
-from utils.pdf_generator import generate_pdf
-from data.tool_types import tool_types
-from data.material_data import material_defaults
+from utils.pdf_generator import generate_pdf_report
+from data.tool_types import TOOL_TYPES
+from data.material_data import MATERIAL_DATA
 import os
 
 app = Flask(__name__)
