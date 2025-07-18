@@ -64,3 +64,43 @@ def get_profile_factor(profile):
     elif profile == "Expert":
         return 1.2
     return 1.0
+
+def calculate_all(
+    profile,
+    tool_type,
+    material,
+    tool_diameter,
+    flutes,
+    ap,
+    ae,
+    vc_override=None,
+    fz_override=None,
+    tool_life_override=None,
+    tool_material="Carbide"
+):
+    profile_factor = get_profile_factor(profile)
+    tool_material_factor = get_tool_material_factor(tool_material)
+    force_coeff = get_force_coefficient(material)
+
+    # Defaults or overrides
+    vc = vc_override or (120 * profile_factor)
+    fz = fz_override or (0.05 * profile_factor)
+
+    spindle_speed = calculate_spindle_speed(vc, tool_diameter)
+    feedrate = calculate_feedrate(fz, spindle_speed, flutes)
+    mrr = calculate_mrr(ap, ae, feedrate)
+    cutting_force = calculate_cutting_force(force_coeff, ap, ae)
+    cutting_power = calculate_cutting_power(cutting_force, feedrate)
+
+    tool_life = tool_life_override or estimate_tool_life(vc, fz, tool_material_factor, profile_factor)
+
+    return {
+        "Cutting Speed (Vc)": round(vc, 2),
+        "Spindle Speed (RPM)": round(spindle_speed),
+        "Feedrate (mm/min)": round(feedrate, 2),
+        "Material Removal Rate (MRR mm³/min)": round(mrr, 2),
+        "Cutting Force (N)": round(cutting_force, 2),
+        "Cutting Power (kW)": round(cutting_power, 2),
+        "Estimated Tool Life (min)": round(tool_life, 2)
+    }
+
