@@ -96,63 +96,47 @@ template = """
 <html lang=\"en\">
 <head>
   <title>CNC Tool Calculator</title>
-  <link rel=\"manifest\" href=\"/static/manifest.json\">
-  <meta name=\"theme-color\" content=\"#0d47a1\">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="/static/manifest.json">
+  <meta name="theme-color" content="#0d47a1">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 1rem;
+      margin: 0;
+      background: #f7f7f7;
+    }
+    form {
+      max-width: 400px;
+      margin: 0 auto;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+    input, select, button {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+    h2, h3 {
+      text-align: center;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+  </style>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/static/service-worker.js');
     }
   </script>
 </head>
-<body>
-<h2>CNC Tool Parameter Calculator</h2>
-<form method=\"post\">
-  <label>Material:</label>
-  <select name=\"material\">
-    <option value=\"EN24\">EN24</option>
-    <option value=\"17-4PH\">17-4PH</option>
-  </select><br><br>
-
-  <label>Tool Type:</label>
-  <select name=\"tool_type\">
-    <option value=\"HSS\">HSS</option>
-    <option value=\"Carbide\">Carbide</option>
-  </select><br><br>
-
-  <label>Tool Diameter (mm):</label>
-  <input type=\"number\" step=\"0.1\" name=\"diameter\" required><br><br>
-
-  <label>Flutes:</label>
-  <input type=\"number\" name=\"flutes\" required><br><br>
-
-  <label>Feed per Tooth:</label>
-  <select name=\"fz_mode\">
-    <option value=\"roughing\">Roughing Preset</option>
-    <option value=\"finishing\">Finishing Preset</option>
-    <option value=\"manual\">Manual</option>
-  </select>
-  <input type=\"number\" step=\"0.01\" name=\"fz\" placeholder=\"Manual input if selected\"><br><br>
-
-  <label>Desired Tool Life (min):</label>
-  <input type=\"number\" step=\"0.1\" name=\"desired_life\" placeholder=\"Optional\"><br><br>
-
-  <button type=\"submit\">Calculate</button>
-</form>
-
-{% if result %}
-  <h3>Results:</h3>
-  {% if result.error %}
-    <p style=\"color:red;\">Error: {{ result.error }}</p>
-  {% else %}
-    <ul>
-      <li>Cutting Speed (Vc): {{ result.Vc }} m/min</li>
-      <li>Spindle Speed (RPM): {{ result.RPM }}</li>
-      <li>Feedrate: {{ result.Feedrate }} mm/min</li>
-      <li>Estimated Tool Life: {{ result.ToolLife }} minutes</li>
-    </ul>
-  {% endif %}
-{% endif %}
-</body>
 </html>
 """
 
