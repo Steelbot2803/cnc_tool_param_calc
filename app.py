@@ -27,7 +27,7 @@ def index():
             ae = float(ae_val) if ae_val not in (None, "") else 0
             tool_life_val = request.form.get('tool_life')
             tool_life = float(tool_life_val) if tool_life_val not in (None, "") else None
-            detailed = request.form.get('report_type', 'basic') == 'detailed'
+            # detailed = request.form.get('report_type', 'basic') == 'detailed'  # REMOVE
 
             # Optional overrides
             vc_val = request.form.get('vc')
@@ -60,7 +60,7 @@ def index():
             )
 
             if 'export_pdf' in request.form:
-                pdf_data = generate_pdf_report(result, detailed=detailed)
+                pdf_data = generate_pdf_report(result, detailed=True)  # Always detailed
                 return send_file(BytesIO(pdf_data), as_attachment=True, download_name="cnc_report.pdf")
 
         except Exception as e:
