@@ -11,11 +11,12 @@ app = Flask(__name__)
 def index():
     result = None
     tool_types_list = list(tool_types.keys())
+    material_list = list(material_data.keys())
 
     if request.method == 'POST':
         tool_type = request.form['tool_type']
         tool_material = request.form['tool_material']
-        material = request.form['material']
+        material = request.form['material_data']
 
         # Extract user inputs or fall back to recommended defaults
         defaults = tool_types.get(tool_type, {})
@@ -59,7 +60,7 @@ def index():
 
     return render_template('index.html',
         tool_types=tool_types_list,
-        materials=materials,
+        materials=material_list,
         result=result,
         recommended_fz=recommended_fz if request.method == 'POST' else '',
         recommended_vc=recommended_vc if request.method == 'POST' else '',
