@@ -485,6 +485,10 @@ window.addEventListener('DOMContentLoaded', function() {
     document.getElementById('corner-radius-group').style.display = (toolType === 'Corner Radius Mill') ? '' : 'none';
     document.getElementById('chamfer-angle-group').style.display = (toolType === 'Chamfer Mill') ? '' : 'none';
     document.getElementById('thread-pitch-group').style.display = (toolType === 'Thread Mill') ? '' : 'none';
+    
+    // Debug logging
+    console.log('Tool type:', toolType);
+    console.log('Thread pitch group display:', document.getElementById('thread-pitch-group').style.display);
 
     // Rest of the function remains the same
     const mat = MATERIAL_DATA[material] || {vc: '', fz: ''};
@@ -530,8 +534,11 @@ window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('chamfer_angle').addEventListener('input', autoPopulateFields);
   document.getElementById('thread_pitch').addEventListener('input', autoPopulateFields);
   
-  // Initial population
-  autoPopulateFields();
+  // Initial population - ensure it runs after everything is set up
+  setTimeout(() => {
+    autoPopulateFields();
+    console.log('Initial autoPopulateFields called');
+  }, 100);
 });
 </script>
 {% endblock %}

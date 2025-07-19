@@ -162,7 +162,6 @@ def calculate_all(
         ap = min(ap, corner_radius)
         ae = min(ae, corner_radius)
     if tool_type == 'Chamfer Mill' and chamfer_angle is not None and ae > 0:
-        import math
         ap = ae * math.tan(math.radians(chamfer_angle / 2))
     if tool_type == 'Thread Mill' and thread_pitch is not None:
         # Thread milling: feedrate = thread pitch / number of passes
