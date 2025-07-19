@@ -64,3 +64,65 @@ def get_profile_factor(profile):
     elif profile == "Expert":
         return 1.2
     return 1.0
+
+
+def calculate_all(
+    profile,
+    tool_type,
+    material,
+    tool_diameter,
+    flutes,
+    ap,
+    ae,
+    vc_override=None,
+    fz_override=None,
+    tool_life_override=None,
+    tool_material='Carbide'
+):
+    from data.material_data import MATERIAL_DATA
+    from data.profiles import PROFILES
+    from data.tool_types import TOOL_TYPES
+
+    # Get base values from material data
+    material_props = MATERIAL_DATA.get(material, {"vc": 100, "fz": 0.1})
+    vc = vc_override if vc_override is not None else material_props["vc"]
+    fz = fz_override if fz_override is not None else material_props["fz"]
+
+    # Apply profile adjustments
+    profile_data = PROFILES.get(profile, PROFILES["Beginner"])
+    vc *= profile_data["adjustments"].get("vc_factor", 1.0)
+    fz *= profile_data["adjustments"].get("fz_factor", 1.0)
+
+    # Calculate spindle speed and feedrate
+    spindle_speed = calculate_spindle_speed(vc, tool_diameter)
+    feedrate = calculate_feedrate(fz, spindle_speed, flutes)
+    mrr = calculate_mrr(ap, ae, feedrate)
+
+    # Cutting force and power
+    Kc = get_force_coefficient(material)
+    cutting_force = calculate_cutting_force(Kc, ap, ae)
+    cutting_power = calculate_cutting_power(cutting_force, feedrate)
+
+    # Tool life estimation
+    tool_material_factor = get_tool_material_factor(tool_material)
+    material_factor = 1.0  # Could be refined per material
+    tool_life = tool_life_override if tool_life_override is not None else estimate_tool_life(vc, fz, tool_material_factor, material_factor)
+
+    return {
+        "vc": vc,
+        "fz": fz,
+        "spindle_speed": spindle_speed,
+        "feedrate": feedrate,
+        "mrr": mrr,
+        "cutting_force": cutting_force,
+        "cutting_power": cutting_power,
+        "tool_life": tool_life,
+        "ap": ap,
+        "ae": ae,
+        "flutes": flutes,
+        "tool_diameter": tool_diameter,
+        "tool_type": tool_type,
+        "material": material,
+        "profile": profile,
+        "tool_material": tool_material
+    }

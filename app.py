@@ -20,16 +20,23 @@ def index():
             profile = request.form.get('profile', 'Beginner')
             tool_type = request.form.get('tool_type', 'End Mill')
             material = request.form.get('material')
-            diameter = float(request.form.get('tool_diameter', 0))
-            flutes = int(request.form.get('flutes', TOOL_TYPES[tool_type]['default_flutes']))
-            ap = float(request.form.get('ap', 0))
-            ae = float(request.form.get('ae', 0))
-            tool_life = float(request.form.get('tool_life', 0)) or None
+            diameter_val = request.form.get('tool_diameter')
+            diameter = float(diameter_val) if diameter_val not in (None, "") else 0
+            flutes_val = request.form.get('flutes')
+            flutes = int(flutes_val) if flutes_val not in (None, "") else TOOL_TYPES[tool_type]['default_flutes']
+            ap_val = request.form.get('ap')
+            ap = float(ap_val) if ap_val not in (None, "") else 0
+            ae_val = request.form.get('ae')
+            ae = float(ae_val) if ae_val not in (None, "") else 0
+            tool_life_val = request.form.get('tool_life')
+            tool_life = float(tool_life_val) if tool_life_val not in (None, "") else None
             detailed = request.form.get('report_type', 'basic') == 'detailed'
 
             # Optional overrides
-            vc = float(request.form.get('vc')) if request.form.get('vc') else None
-            fz = float(request.form.get('fz')) if request.form.get('fz') else None
+            vc_val = request.form.get('vc')
+            vc = float(vc_val) if vc_val not in (None, "") else None
+            fz_val = request.form.get('fz')
+            fz = float(fz_val) if fz_val not in (None, "") else None
             tool_material = request.form.get('tool_material', 'Carbide')
 
             result = calculate_all(
