@@ -9,7 +9,12 @@
   <form method="POST" class="bg-gray-900 rounded-xl shadow-lg p-4 md:p-6 flex flex-col gap-3">
     <div class="grid grid-cols-1 gap-3">
       <div>
-        <label class="block text-gray-300 mb-1">Tool Type</label>
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">Tool Type
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">Select the type of cutting tool you are using (e.g., End Mill, Drill).</span>
+          </span>
+        </label>
         <select id="tool_type" name="tool_type" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
           {% for t in tool_types %}
           <option value="{{ t }}" {% if t == selected_tool %}selected{% endif %}>{{ t }}</option>
@@ -17,7 +22,12 @@
         </select>
       </div>
       <div>
-        <label class="block text-gray-300 mb-1">Work Material</label>
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">Work Material
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The material you are machining (e.g., Aluminum, Steel).</span>
+          </span>
+        </label>
         <select id="material" name="material" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
           {% for m in materials %}
           <option value="{{ m }}">{{ m }}</option>
@@ -25,42 +35,87 @@
         </select>
       </div>
       <div>
-        <label class="block text-gray-300 mb-1">Tool Material</label>
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">Tool Material
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The material the tool is made from (e.g., Carbide, HSS).</span>
+          </span>
+        </label>
         <select name="tool_material" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
           <option value="Carbide">Carbide</option>
           <option value="HSS">HSS</option>
         </select>
       </div>
       <div>
-        <label class="block text-gray-300 mb-1">Tool Diameter (mm)</label>
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">Tool Diameter (mm)
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">Diameter of the cutting part of the tool, in millimeters.</span>
+          </span>
+        </label>
         <input id="tool_diameter" type="number" step="0.01" name="tool_diameter" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="block text-gray-300 mb-1">Flutes (Cutting Edges)</label>
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">Flutes
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">Number of cutting edges on the tool. More flutes = more edges.</span>
+          </span>
+        </label>
         <input id="flutes" type="number" name="flutes" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="block text-gray-300 mb-1">ap (Axial Depth, mm)</label>
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">ap (Axial Depth, mm)
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">ap: Depth of cut along the tool's axis (vertical direction).</span>
+          </span>
+        </label>
         <input id="ap" type="number" step="0.01" name="ap" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="block text-gray-300 mb-1">ae (Radial Depth, mm)</label>
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">ae (Radial Depth, mm)
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">ae: Width of cut across the tool's diameter (sideways).</span>
+          </span>
+        </label>
         <input id="ae" type="number" step="0.01" name="ae" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="block text-gray-300 mb-1">Override Cutting Speed Vc (m/min)</label>
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">Override Cutting Speed Vc (m/min)
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">Vc: Cutting speed. How fast the tool moves through the material (meters per minute). Leave blank for recommended.</span>
+          </span>
+        </label>
         <input id="vc" type="number" step="0.1" name="vc" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="block text-gray-300 mb-1">Override Feed per Tooth fz (mm)</label>
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">Override Feed per Tooth fz (mm)
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">fz: Feed per tooth. How much the tool advances per cutting edge per revolution (mm). Leave blank for recommended.</span>
+          </span>
+        </label>
         <input id="fz" type="number" step="0.01" name="fz" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="block text-gray-300 mb-1">Target Tool Life (min, optional)</label>
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">Target Tool Life (min, optional)
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">How long you want the tool to last (in minutes). Leave blank to calculate estimated tool life.</span>
+          </span>
+        </label>
         <input type="number" step="1" name="tool_life" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="block text-gray-300 mb-1">Report Type</label>
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">Report Type
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">Choose between a basic or detailed report output.</span>
+          </span>
+        </label>
         <select name="report_type" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
           <option value="basic">Basic</option>
           <option value="detailed">Detailed</option>

@@ -86,6 +86,23 @@ def calculate_all(
     vc = vc_override if vc_override is not None else material_props["vc"]
     fz = fz_override if fz_override is not None else material_props["fz"]
 
+    tool_material_factor = get_tool_material_factor(tool_material)
+    material_factor = 1.0  # Could be refined per material
+
+    # If tool_life_override is provided, optimize for tool life by adjusting vc (cutting speed)
+    calculated_tool_life = None
+    if tool_life_override is not None:
+        # Try to adjust vc to achieve the target tool life, keeping fz constant
+        # Rearranged: tool_life = (tool_material_factor * material_factor) / (vc * fz * 1000)
+        # => vc = (tool_material_factor * material_factor) / (tool_life_override * fz * 1000)
+        if fz > 0 and tool_life_override > 0:
+            vc = (tool_material_factor * material_factor) / (tool_life_override * fz * 1000)
+        # Calculate what tool life would be with this vc
+        calculated_tool_life = tool_life_override
+    else:
+        # Calculate tool life with current vc and fz
+        calculated_tool_life = estimate_tool_life(vc, fz, tool_material_factor, material_factor)
+
     # Calculate spindle speed and feedrate
     spindle_speed = calculate_spindle_speed(vc, tool_diameter)
     feedrate = calculate_feedrate(fz, spindle_speed, flutes)
@@ -96,11 +113,6 @@ def calculate_all(
     cutting_force = calculate_cutting_force(Kc, ap, ae)
     cutting_power = calculate_cutting_power(cutting_force, feedrate)
 
-    # Tool life estimation
-    tool_material_factor = get_tool_material_factor(tool_material)
-    material_factor = 1.0  # Could be refined per material
-    tool_life = tool_life_override if tool_life_override is not None else estimate_tool_life(vc, fz, tool_material_factor, material_factor)
-
     return {
         "vc": vc,
         "fz": fz,
@@ -109,7 +121,7 @@ def calculate_all(
         "mrr": mrr,
         "cutting_force": cutting_force,
         "cutting_power": cutting_power,
-        "tool_life": tool_life,
+        "tool_life": calculated_tool_life,
         "ap": ap,
         "ae": ae,
         "flutes": flutes,
