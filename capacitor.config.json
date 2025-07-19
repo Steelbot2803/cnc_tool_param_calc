@@ -1,0 +1,13 @@
+{
+  "appId": "com.cnctoolcalc.app",
+  "appName": "CNC ToolCalc",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://cnc-tool-param-calc.onrender.com",
+    "cleartext": false
+  },
+  "android": {
+    "backgroundColor": "#000000"
+  }
+}
