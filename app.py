@@ -10,11 +10,11 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     result = None
-    tool_types_list = list(TOOL_TYPES.keys())
+    tool_types_list = list(tool_types.keys())
     material_list = list(MATERIAL_DATA.keys())
 
     if request.method == 'POST':
-        tool_type = request.form['TOOL_TYPES']
+        tool_type = request.form['tool_types']
         tool_material = request.form['tool_material']
         material = request.form['MATERIAL_DATA']
 
