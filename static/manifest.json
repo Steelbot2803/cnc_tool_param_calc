@@ -10,7 +10,15 @@
   "orientation": "portrait",
   "scope": "/",
   "lang": "en",
+  "dir": "ltr",
   "categories": ["productivity", "tools"],
+  "prefer_related_applications": false,
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://cnc-tool-calculator.onrender.com"
+    }
+  ],
   "launch_handler": {
     "client_mode": "navigate-existing"
   },
