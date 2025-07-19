@@ -40,6 +40,8 @@ def index():
             corner_radius = float(corner_radius_val) if corner_radius_val not in (None, "") else None
             chamfer_angle_val = request.form.get('chamfer_angle')
             chamfer_angle = float(chamfer_angle_val) if chamfer_angle_val not in (None, "") else None
+            thread_pitch_val = request.form.get('thread_pitch')
+            thread_pitch = float(thread_pitch_val) if thread_pitch_val not in (None, "") else None
 
             result = calculate_all(
                 tool_type=tool_type,
@@ -53,7 +55,8 @@ def index():
                 tool_life_override=tool_life,
                 tool_material=tool_material,
                 corner_radius=corner_radius,
-                chamfer_angle=chamfer_angle
+                chamfer_angle=chamfer_angle,
+                thread_pitch=thread_pitch
             )
 
             if 'export_pdf' in request.form:

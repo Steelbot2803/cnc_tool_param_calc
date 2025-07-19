@@ -9,46 +9,67 @@
     </div>
     <form method="POST" class="bg-gray-900 rounded-2xl shadow-lg p-4 md:p-8 flex flex-col gap-6 items-center w-full">
       <!-- Tool Info Group -->
-      <div class="w-full flex flex-col md:flex-row gap-4">
-        <div class="flex-1">
-          <label class="block text-gray-300 mb-1 flex items-center gap-1">Tool Type
+      <div class="w-full flex flex-col gap-4">
+        <div>
+          <label class="block text-gray-300 mb-2 flex items-center gap-1">Tool Type
             <span class="relative group cursor-pointer">
               <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
-              <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">Select the type of cutting tool you are using (e.g., End Mill, Drill).</span>
+              <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">Select the type of cutting tool you are using.</span>
             </span>
           </label>
-          <select id="tool_type" name="tool_type" class="w-full h-12 p-3 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
+          <div class="grid grid-cols-2 gap-2">
             {% for t in tool_types %}
-            <option value="{{ t }}" {% if t == selected_tool %}selected{% endif %}>{{ t }}</option>
+            <button type="button" 
+                    class="tool-type-btn p-4 rounded-xl border-2 transition-all duration-200 text-sm font-medium {% if t == selected_tool %}bg-green-600 border-green-500 text-white{% else %}bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600{% endif %}"
+                    data-value="{{ t }}">
+              {{ t }}
+            </button>
             {% endfor %}
-          </select>
+          </div>
+          <input type="hidden" id="tool_type" name="tool_type" value="{{ selected_tool }}">
         </div>
-        <div class="flex-1">
-          <label class="block text-gray-300 mb-1 flex items-center gap-1">Tool Material
+        
+        <div>
+          <label class="block text-gray-300 mb-2 flex items-center gap-1">Tool Material
             <span class="relative group cursor-pointer">
               <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
-              <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The material the tool is made from (e.g., Carbide, HSS).</span>
+              <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The material the tool is made from.</span>
             </span>
           </label>
-          <select name="tool_material" class="w-full h-12 p-3 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
-            <option value="Carbide">Carbide</option>
-            <option value="HSS">HSS</option>
-          </select>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" 
+                    class="tool-material-btn p-4 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-green-600 border-green-500 text-white"
+                    data-value="Carbide">
+              Carbide
+            </button>
+            <button type="button" 
+                    class="tool-material-btn p-4 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600"
+                    data-value="HSS">
+              HSS
+            </button>
+          </div>
+          <input type="hidden" name="tool_material" value="Carbide">
         </div>
       </div>
+      
       <!-- Work Material Group -->
       <div class="w-full">
-        <label class="block text-gray-300 mb-1 flex items-center gap-1">Work Material
+        <label class="block text-gray-300 mb-2 flex items-center gap-1">Work Material
           <span class="relative group cursor-pointer">
             <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
-            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The material you are machining (e.g., Aluminum, Steel).</span>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The material you are machining.</span>
           </span>
         </label>
-        <select id="material" name="material" class="w-full h-12 p-3 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
+        <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
           {% for m in materials %}
-          <option value="{{ m }}">{{ m }}</option>
+          <button type="button" 
+                  class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600"
+                  data-value="{{ m }}">
+            {{ m }}
+          </button>
           {% endfor %}
-        </select>
+        </div>
+        <input type="hidden" id="material" name="material" value="{{ materials[0] if materials else '' }}">
       </div>
       <!-- Cutting Parameters Group -->
       <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -89,30 +110,30 @@
           <input id="ae" type="number" step="0.001" name="ae" class="w-full h-12 p-3 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
         </div>
         <div>
-          <label class="block text-gray-300 mb-1 flex items-center gap-1">Override Cutting Speed Vc (m/min)
-            <span class="relative group cursor-pointer">
-              <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
-              <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">Vc: Cutting speed. How fast the tool moves through the material (meters per minute). Leave blank for recommended.</span>
-            </span>
-          </label>
+                  <label class="block text-gray-300 mb-1 flex items-center gap-1">Cutting Speed Vc (m/min)
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">Vc: Cutting speed. How fast the tool moves through the material (meters per minute). Leave blank for recommended.</span>
+          </span>
+        </label>
           <input id="vc" type="number" step="0.001" name="vc" class="w-full h-12 p-3 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
         </div>
         <div>
-          <label class="block text-gray-300 mb-1 flex items-center gap-1">Override Feed per Tooth fz (mm)
-            <span class="relative group cursor-pointer">
-              <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
-              <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">fz: Feed per tooth. How much the tool advances per cutting edge per revolution (mm). Leave blank for recommended.</span>
-            </span>
-          </label>
+                  <label class="block text-gray-300 mb-1 flex items-center gap-1">Feed per Tooth fz (mm)
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">fz: Feed per tooth. How much the tool advances per cutting edge per revolution (mm). Leave blank for recommended.</span>
+          </span>
+        </label>
           <input id="fz" type="number" step="0.001" name="fz" class="w-full h-12 p-3 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
         </div>
         <div>
-          <label class="block text-gray-300 mb-1 flex items-center gap-1">Target Tool Life (min, optional)
-            <span class="relative group cursor-pointer">
-              <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
-              <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">How long you want the tool to last (in minutes). Leave blank to calculate estimated tool life.</span>
-            </span>
-          </label>
+                  <label class="block text-gray-300 mb-1 flex items-center gap-1">Target Tool Life (optional)
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">How long you want the tool to last. Leave blank to calculate estimated tool life.</span>
+          </span>
+        </label>
           <input type="number" step="1" name="tool_life" class="w-full h-12 p-3 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
         </div>
         <div>
@@ -147,6 +168,15 @@
             </span>
           </label>
           <input id="chamfer_angle" type="number" step="0.001" name="chamfer_angle" class="w-full h-12 p-3 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
+        </div>
+        <div id="thread-pitch-group" class="flex-1" style="display:none;">
+          <label class="block text-gray-300 mb-1 flex items-center gap-1">Thread Pitch (mm)
+            <span class="relative group cursor-pointer">
+              <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+              <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">Distance between thread crests (e.g., M8x1.25 = 1.25mm pitch). Critical for thread milling feedrate calculation.</span>
+            </span>
+          </label>
+          <input id="thread_pitch" type="number" step="0.001" name="thread_pitch" class="w-full h-12 p-3 rounded-2xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
         </div>
       </div>
       <!-- Actions -->
@@ -326,10 +356,11 @@ const TOOL_MATERIAL_MULTIPLIERS = {
 function autoPopulateFields() {
   const material = document.getElementById('material').value;
   const toolType = document.getElementById('tool_type').value;
-  const toolMaterial = document.querySelector('select[name="tool_material"]').value;
+  const toolMaterial = document.querySelector('input[name="tool_material"]').value;
   // Show/hide special fields
   document.getElementById('corner-radius-group').style.display = (toolType === 'Corner Radius Mill') ? '' : 'none';
   document.getElementById('chamfer-angle-group').style.display = (toolType === 'Chamfer Mill') ? '' : 'none';
+  document.getElementById('thread-pitch-group').style.display = (toolType === 'Thread Mill') ? '' : 'none';
 
   // Recommended values
   const mat = MATERIAL_DATA[material] || {vc: '', fz: ''};
@@ -359,17 +390,158 @@ function autoPopulateFields() {
     const radius = parseFloat(document.getElementById('corner_radius').value) || 0;
     document.getElementById('ap').value = radius ? (0.5 * radius).toFixed(3) : '';
     document.getElementById('ae').value = radius ? (0.5 * radius).toFixed(3) : '';
+  } else if (toolType === 'Thread Mill') {
+    document.getElementById('ap').value = '';
+    document.getElementById('ae').value = '';
+    document.getElementById('thread_pitch').value = '';
   } else {
     document.getElementById('ap').value = toolDiameter ? (tool.recommended_ap_ratio * toolDiameter).toFixed(3) : '';
     document.getElementById('ae').value = toolDiameter ? (tool.recommended_ae_ratio * toolDiameter).toFixed(3) : '';
   }
 }
 window.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('material').addEventListener('change', autoPopulateFields);
-  document.getElementById('tool_type').addEventListener('change', autoPopulateFields);
+  // Button selector functionality
+  function setupButtonSelectors() {
+    // Tool type buttons
+    document.querySelectorAll('.tool-type-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Remove active state from all buttons
+        document.querySelectorAll('.tool-type-btn').forEach(b => {
+          b.classList.remove('bg-green-600', 'border-green-500', 'text-white');
+          b.classList.add('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        });
+        // Add active state to clicked button
+        this.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        this.classList.add('bg-green-600', 'border-green-500', 'text-white');
+        // Update hidden input
+        document.getElementById('tool_type').value = this.dataset.value;
+        // Trigger auto-populate
+        autoPopulateFields();
+      });
+    });
+
+    // Tool material buttons
+    document.querySelectorAll('.tool-material-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Remove active state from all buttons
+        document.querySelectorAll('.tool-material-btn').forEach(b => {
+          b.classList.remove('bg-green-600', 'border-green-500', 'text-white');
+          b.classList.add('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        });
+        // Add active state to clicked button
+        this.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        this.classList.add('bg-green-600', 'border-green-500', 'text-white');
+        // Update hidden input
+        document.querySelector('input[name="tool_material"]').value = this.dataset.value;
+        // Trigger auto-populate
+        autoPopulateFields();
+      });
+    });
+
+    // Material buttons
+    document.querySelectorAll('.material-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Remove active state from all buttons
+        document.querySelectorAll('.material-btn').forEach(b => {
+          b.classList.remove('bg-green-600', 'border-green-500', 'text-white');
+          b.classList.add('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        });
+        // Add active state to clicked button
+        this.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        this.classList.add('bg-green-600', 'border-green-500', 'text-white');
+        // Update hidden input
+        document.getElementById('material').value = this.dataset.value;
+        // Trigger auto-populate
+        autoPopulateFields();
+      });
+    });
+
+    // Set initial active states
+    const selectedTool = document.getElementById('tool_type').value;
+    const selectedMaterial = document.getElementById('material').value;
+    const selectedToolMaterial = document.querySelector('input[name="tool_material"]').value;
+
+    document.querySelectorAll('.tool-type-btn').forEach(btn => {
+      if (btn.dataset.value === selectedTool) {
+        btn.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        btn.classList.add('bg-green-600', 'border-green-500', 'text-white');
+      }
+    });
+
+    document.querySelectorAll('.material-btn').forEach(btn => {
+      if (btn.dataset.value === selectedMaterial) {
+        btn.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        btn.classList.add('bg-green-600', 'border-green-500', 'text-white');
+      }
+    });
+
+    document.querySelectorAll('.tool-material-btn').forEach(btn => {
+      if (btn.dataset.value === selectedToolMaterial) {
+        btn.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        btn.classList.add('bg-green-600', 'border-green-500', 'text-white');
+      }
+    });
+  }
+
+  // Setup button selectors
+  setupButtonSelectors();
+
+  // Update autoPopulateFields to work with new selectors
+  const originalAutoPopulate = autoPopulateFields;
+  autoPopulateFields = function() {
+    const material = document.getElementById('material').value;
+    const toolType = document.getElementById('tool_type').value;
+    const toolMaterial = document.querySelector('input[name="tool_material"]').value;
+    
+    // Show/hide special fields
+    document.getElementById('corner-radius-group').style.display = (toolType === 'Corner Radius Mill') ? '' : 'none';
+    document.getElementById('chamfer-angle-group').style.display = (toolType === 'Chamfer Mill') ? '' : 'none';
+    document.getElementById('thread-pitch-group').style.display = (toolType === 'Thread Mill') ? '' : 'none';
+
+    // Rest of the function remains the same
+    const mat = MATERIAL_DATA[material] || {vc: '', fz: ''};
+    const tool = TOOL_TYPES[toolType] || {recommended_ap_ratio: '', recommended_ae_ratio: '', default_flutes: ''};
+    const mult = TOOL_MATERIAL_MULTIPLIERS[toolMaterial] || {vc: 1, fz: 1};
+    
+    document.getElementById('vc').value = mat.vc ? (mat.vc * mult.vc).toFixed(3) : '';
+    document.getElementById('fz').value = mat.fz ? (mat.fz * mult.fz).toFixed(3) : '';
+    document.getElementById('flutes').value = tool.default_flutes;
+    const toolDiameter = parseFloat(document.getElementById('tool_diameter').value) || 0;
+
+    // Tool type-specific logic
+    if (toolType === 'Face Mill') {
+      document.getElementById('ap').value = toolDiameter ? (0.1 * toolDiameter).toFixed(3) : '';
+      document.getElementById('ae').value = toolDiameter ? (1.0 * toolDiameter).toFixed(3) : '';
+    } else if (toolType === 'Ball Mill') {
+      document.getElementById('ap').value = toolDiameter ? (0.6 * toolDiameter).toFixed(3) : '';
+      document.getElementById('ae').value = toolDiameter ? (0.4 * toolDiameter).toFixed(3) : '';
+    } else if (toolType === 'Drill') {
+      document.getElementById('ap').value = toolDiameter ? (2.0 * toolDiameter).toFixed(3) : '';
+      document.getElementById('ae').value = toolDiameter ? (1.0 * toolDiameter).toFixed(3) : '';
+      document.getElementById('flutes').value = 2;
+    } else if (toolType === 'Chamfer Mill') {
+      document.getElementById('ap').value = '';
+      document.getElementById('ae').value = '';
+    } else if (toolType === 'Corner Radius Mill') {
+      const radius = parseFloat(document.getElementById('corner_radius').value) || 0;
+      document.getElementById('ap').value = radius ? (0.5 * radius).toFixed(3) : '';
+      document.getElementById('ae').value = radius ? (0.5 * radius).toFixed(3) : '';
+    } else if (toolType === 'Thread Mill') {
+      document.getElementById('ap').value = '';
+      document.getElementById('ae').value = '';
+      document.getElementById('thread_pitch').value = '';
+    } else {
+      document.getElementById('ap').value = toolDiameter ? (tool.recommended_ap_ratio * toolDiameter).toFixed(3) : '';
+      document.getElementById('ae').value = toolDiameter ? (tool.recommended_ae_ratio * toolDiameter).toFixed(3) : '';
+    }
+  };
+
+  // Event listeners for other fields
   document.getElementById('tool_diameter').addEventListener('input', autoPopulateFields);
   document.getElementById('corner_radius').addEventListener('input', autoPopulateFields);
-  document.querySelector('select[name="tool_material"]').addEventListener('change', autoPopulateFields);
+  document.getElementById('chamfer_angle').addEventListener('input', autoPopulateFields);
+  document.getElementById('thread_pitch').addEventListener('input', autoPopulateFields);
+  
   // Initial population
   autoPopulateFields();
 });

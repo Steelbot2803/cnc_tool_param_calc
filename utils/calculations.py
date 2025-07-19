@@ -133,7 +133,8 @@ def calculate_all(
     tool_life_override=None,
     tool_material='Carbide',
     corner_radius=None,
-    chamfer_angle=None
+    chamfer_angle=None,
+    thread_pitch=None
 ):
     from data.material_data import MATERIAL_DATA
     from data.tool_types import TOOL_TYPES
@@ -163,6 +164,11 @@ def calculate_all(
     if tool_type == 'Chamfer Mill' and chamfer_angle is not None and ae > 0:
         import math
         ap = ae * math.tan(math.radians(chamfer_angle / 2))
+    if tool_type == 'Thread Mill' and thread_pitch is not None:
+        # Thread milling: feedrate = thread pitch / number of passes
+        # Typically 3-5 passes for thread milling
+        passes = 3  # Could be made configurable
+        fz = thread_pitch / passes
 
     # Chip thinning correction
     fz_original = fz
@@ -246,6 +252,7 @@ def calculate_all(
         "tool_material": tool_material,
         "corner_radius": corner_radius,
         "chamfer_angle": chamfer_angle,
+        "thread_pitch": thread_pitch,
         "warnings": warnings,
         "effective_diameter": effective_diameter
     }
