@@ -10,13 +10,13 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     result = None
-    tool_types_list = list(tool_types.keys())
-    material_list = list(material_data.keys())
+    tool_types_list = list(TOOL_TYPES.keys())
+    material_list = list(MATERIAL_DATA.keys())
 
     if request.method == 'POST':
-        tool_type = request.form['tool_type']
+        tool_type = request.form['TOOL_TYPES']
         tool_material = request.form['tool_material']
-        material = request.form['material_data']
+        material = request.form['MATERIAL_DATA']
 
         # Extract user inputs or fall back to recommended defaults
         defaults = tool_types.get(tool_type, {})
