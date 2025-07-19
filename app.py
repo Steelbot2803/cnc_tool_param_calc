@@ -3,7 +3,6 @@ from io import BytesIO
 from utils.calculations import calculate_all
 from utils.pdf_generator import generate_pdf_report
 from data.material_data import MATERIAL_DATA
-from data.profiles import PROFILES
 from data.tool_types import TOOL_TYPES
 
 app = Flask(__name__)
@@ -11,13 +10,11 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     result = {}
-    selected_profile = 'Beginner'
     selected_tool = 'End Mill'
 
     if request.method == 'POST':
         try:
             # Get user input
-            profile = request.form.get('profile', 'Beginner')
             tool_type = request.form.get('tool_type', 'End Mill')
             material = request.form.get('material')
             diameter_val = request.form.get('tool_diameter')
@@ -40,7 +37,6 @@ def index():
             tool_material = request.form.get('tool_material', 'Carbide')
 
             result = calculate_all(
-                profile=profile,
                 tool_type=tool_type,
                 material=material,
                 tool_diameter=diameter,
@@ -60,14 +56,11 @@ def index():
         except Exception as e:
             result = {'error': str(e)}
 
-        selected_profile = profile
         selected_tool = tool_type
 
     return render_template(
         'index.html',
         result=result,
-        profiles=list(PROFILES.keys()),
-        selected_profile=selected_profile,
         materials=list(MATERIAL_DATA.keys()),
         tool_types=list(TOOL_TYPES.keys()),
         selected_tool=selected_tool

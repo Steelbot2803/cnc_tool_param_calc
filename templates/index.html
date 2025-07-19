@@ -6,17 +6,8 @@
 
       <!-- Profile and Tool Type -->
       <div>
-        <label class="text-white">User Profile</label>
-        <select name="profile" class="w-full p-2 rounded bg-gray-800 text-white">
-          {% for p in profiles %}
-          <option value="{{ p }}" {% if p == selected_profile %}selected{% endif %}>{{ p }}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div>
         <label class="text-white">Tool Type</label>
-        <select name="tool_type" class="w-full p-2 rounded bg-gray-800 text-white">
+        <select id="tool_type" name="tool_type" class="w-full p-2 rounded bg-gray-800 text-white">
           {% for t in tool_types %}
           <option value="{{ t }}" {% if t == selected_tool %}selected{% endif %}>{{ t }}</option>
           {% endfor %}
@@ -26,7 +17,7 @@
       <!-- Material and Tool Material -->
       <div>
         <label class="text-white">Work Material</label>
-        <select name="material" class="w-full p-2 rounded bg-gray-800 text-white">
+        <select id="material" name="material" class="w-full p-2 rounded bg-gray-800 text-white">
           {% for m in materials %}
           <option value="{{ m }}">{{ m }}</option>
           {% endfor %}
@@ -44,29 +35,29 @@
       <!-- Tool Geometry -->
       <div>
         <label class="text-white">Tool Diameter (mm)</label>
-        <input type="number" step="0.01" name="tool_diameter" class="w-full p-2 rounded bg-gray-800 text-white">
+        <input id="tool_diameter" type="number" step="0.01" name="tool_diameter" class="w-full p-2 rounded bg-gray-800 text-white">
       </div>
       <div>
         <label class="text-white">Flutes (Cutting Edges)</label>
-        <input type="number" name="flutes" class="w-full p-2 rounded bg-gray-800 text-white">
+        <input id="flutes" type="number" name="flutes" class="w-full p-2 rounded bg-gray-800 text-white">
       </div>
       <div>
         <label class="text-white">ap (Axial Depth, mm)</label>
-        <input type="number" step="0.01" name="ap" class="w-full p-2 rounded bg-gray-800 text-white">
+        <input id="ap" type="number" step="0.01" name="ap" class="w-full p-2 rounded bg-gray-800 text-white">
       </div>
       <div>
         <label class="text-white">ae (Radial Depth, mm)</label>
-        <input type="number" step="0.01" name="ae" class="w-full p-2 rounded bg-gray-800 text-white">
+        <input id="ae" type="number" step="0.01" name="ae" class="w-full p-2 rounded bg-gray-800 text-white">
       </div>
 
       <!-- Optional Overrides -->
       <div>
         <label class="text-white">Override Cutting Speed Vc (m/min)</label>
-        <input type="number" step="0.1" name="vc" class="w-full p-2 rounded bg-gray-800 text-white">
+        <input id="vc" type="number" step="0.1" name="vc" class="w-full p-2 rounded bg-gray-800 text-white">
       </div>
       <div>
         <label class="text-white">Override Feed per Tooth fz (mm)</label>
-        <input type="number" step="0.01" name="fz" class="w-full p-2 rounded bg-gray-800 text-white">
+        <input id="fz" type="number" step="0.01" name="fz" class="w-full p-2 rounded bg-gray-800 text-white">
       </div>
       <div>
         <label class="text-white">Target Tool Life (min, optional)</label>
@@ -104,4 +95,58 @@
     {% endif %}
   {% endif %}
 </section>
+<script>
+// Material and tool type data from backend
+const MATERIAL_DATA = {
+  "Mild Steel (EN1A)": {"vc": 80, "fz": 0.1},
+  "Mild Steel (EN8)": {"vc": 90, "fz": 0.12},
+  "Mild Steel (EN24)": {"vc": 100, "fz": 0.15},
+  "Stainless Steel (304)": {"vc": 60, "fz": 0.08},
+  "Stainless Steel (316)": {"vc": 50, "fz": 0.07},
+  "17-4 PH Stainless": {"vc": 55, "fz": 0.09},
+  "Aluminum (6061)": {"vc": 250, "fz": 0.2},
+  "Aluminum (7075)": {"vc": 300, "fz": 0.25},
+  "Titanium (Grade 2)": {"vc": 30, "fz": 0.05},
+  "Titanium (Grade 5)": {"vc": 25, "fz": 0.04},
+  "Brass": {"vc": 120, "fz": 0.15},
+  "Bronze": {"vc": 100, "fz": 0.12},
+  "Cast Iron": {"vc": 90, "fz": 0.1},
+  "Tool Steel (D2)": {"vc": 40, "fz": 0.06},
+  "Tool Steel (O1)": {"vc": 45, "fz": 0.07},
+  "Inconel": {"vc": 20, "fz": 0.03}
+};
+const TOOL_TYPES = {
+  "End Mill": {"recommended_ae_ratio": 0.5, "recommended_ap_ratio": 1.0, "default_flutes": 4},
+  "Ball Mill": {"recommended_ae_ratio": 0.4, "recommended_ap_ratio": 0.6, "default_flutes": 2},
+  "Face Mill": {"recommended_ae_ratio": 1.0, "recommended_ap_ratio": 0.1, "default_flutes": 6},
+  "Corner Radius Mill": {"recommended_ae_ratio": 0.5, "recommended_ap_ratio": 1.0, "default_flutes": 4},
+  "Drill": {"recommended_ae_ratio": 1.0, "recommended_ap_ratio": 2.0, "default_flutes": 2},
+  "Chamfer Mill": {"recommended_ae_ratio": 0.1, "recommended_ap_ratio": 0.1, "default_flutes": 2},
+  "Thread Mill": {"recommended_ae_ratio": 0.2, "recommended_ap_ratio": 1.0, "default_flutes": 3}
+};
+
+function autoPopulateFields() {
+  const material = document.getElementById('material').value;
+  const toolType = document.getElementById('tool_type').value;
+  // Recommended values
+  const mat = MATERIAL_DATA[material] || {vc: '', fz: ''};
+  const tool = TOOL_TYPES[toolType] || {recommended_ap_ratio: '', recommended_ae_ratio: '', default_flutes: ''};
+  // Set recommended values (leave editable)
+  document.getElementById('vc').value = mat.vc;
+  document.getElementById('fz').value = mat.fz;
+  document.getElementById('flutes').value = tool.default_flutes;
+  // ap = recommended_ap_ratio * tool_diameter (if tool_diameter is set)
+  const toolDiameter = parseFloat(document.getElementById('tool_diameter').value) || 0;
+  document.getElementById('ap').value = toolDiameter ? (tool.recommended_ap_ratio * toolDiameter).toFixed(2) : '';
+  document.getElementById('ae').value = toolDiameter ? (tool.recommended_ae_ratio * toolDiameter).toFixed(2) : '';
+}
+// Event listeners
+window.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('material').addEventListener('change', autoPopulateFields);
+  document.getElementById('tool_type').addEventListener('change', autoPopulateFields);
+  document.getElementById('tool_diameter').addEventListener('input', autoPopulateFields);
+  // Initial population
+  autoPopulateFields();
+});
+</script>
 {% endblock %}

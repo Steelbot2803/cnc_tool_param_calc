@@ -67,7 +67,6 @@ def get_profile_factor(profile):
 
 
 def calculate_all(
-    profile,
     tool_type,
     material,
     tool_diameter,
@@ -80,18 +79,12 @@ def calculate_all(
     tool_material='Carbide'
 ):
     from data.material_data import MATERIAL_DATA
-    from data.profiles import PROFILES
     from data.tool_types import TOOL_TYPES
 
     # Get base values from material data
     material_props = MATERIAL_DATA.get(material, {"vc": 100, "fz": 0.1})
     vc = vc_override if vc_override is not None else material_props["vc"]
     fz = fz_override if fz_override is not None else material_props["fz"]
-
-    # Apply profile adjustments
-    profile_data = PROFILES.get(profile, PROFILES["Beginner"])
-    vc *= profile_data["adjustments"].get("vc_factor", 1.0)
-    fz *= profile_data["adjustments"].get("fz_factor", 1.0)
 
     # Calculate spindle speed and feedrate
     spindle_speed = calculate_spindle_speed(vc, tool_diameter)
@@ -123,6 +116,5 @@ def calculate_all(
         "tool_diameter": tool_diameter,
         "tool_type": tool_type,
         "material": material,
-        "profile": profile,
         "tool_material": tool_material
     }
