@@ -1,4 +1,5 @@
 {
+  "id": "cnc-tool-parameter-calculator",
   "name": "CNC Tool Parameter Calculator",
   "short_name": "CNC ToolCalc",
   "description": "Professional CNC machining calculator with advanced features like chip thinning, tool life estimation, and thread milling",
@@ -10,18 +11,33 @@
   "scope": "/",
   "lang": "en",
   "categories": ["productivity", "tools"],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
   "icons": [
     {
       "src": "/static/icon-192.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
     },
     {
       "src": "/static/icon-512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
