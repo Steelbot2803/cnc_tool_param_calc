@@ -121,6 +121,24 @@
           <option value="detailed">Detailed</option>
         </select>
       </div>
+      <div id="corner-radius-group" style="display:none;">
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">Corner Radius (mm)
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The radius of the rounded edge on a corner radius mill. Used for finishing and fillet cuts.</span>
+          </span>
+        </label>
+        <input id="corner_radius" type="number" step="0.01" name="corner_radius" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
+      </div>
+      <div id="chamfer-angle-group" style="display:none;">
+        <label class="block text-gray-300 mb-1 flex items-center gap-1">Chamfer Angle (deg)
+          <span class="relative group cursor-pointer">
+            <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The included angle of the chamfer mill (e.g., 45°, 60°). Used to calculate chamfer width and depth.</span>
+          </span>
+        </label>
+        <input id="chamfer_angle" type="number" step="0.1" name="chamfer_angle" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
+      </div>
     </div>
     <div class="mt-6 flex flex-col gap-3">
       <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-semibold shadow">Calculate</button>
@@ -245,26 +263,62 @@ const TOOL_TYPES = {
   "Thread Mill": {"recommended_ae_ratio": 0.2, "recommended_ap_ratio": 1.0, "default_flutes": 3}
 };
 
+const TOOL_MATERIAL_MULTIPLIERS = {
+  "HSS": {vc: 1, fz: 1},
+  "Carbide": {vc: 2, fz: 1.1},
+  "Coated Carbide": {vc: 2.5, fz: 1.15},
+  "Ceramic": {vc: 3, fz: 1.2},
+  "CBN": {vc: 4, fz: 1.2},
+  "PCD": {vc: 5, fz: 1.2}
+};
+
 function autoPopulateFields() {
   const material = document.getElementById('material').value;
   const toolType = document.getElementById('tool_type').value;
+  const toolMaterial = document.querySelector('select[name="tool_material"]').value;
+  // Show/hide special fields
+  document.getElementById('corner-radius-group').style.display = (toolType === 'Corner Radius Mill') ? '' : 'none';
+  document.getElementById('chamfer-angle-group').style.display = (toolType === 'Chamfer Mill') ? '' : 'none';
+
   // Recommended values
   const mat = MATERIAL_DATA[material] || {vc: '', fz: ''};
   const tool = TOOL_TYPES[toolType] || {recommended_ap_ratio: '', recommended_ae_ratio: '', default_flutes: ''};
+  const mult = TOOL_MATERIAL_MULTIPLIERS[toolMaterial] || {vc: 1, fz: 1};
   // Set recommended values (leave editable)
-  document.getElementById('vc').value = mat.vc;
-  document.getElementById('fz').value = mat.fz;
+  document.getElementById('vc').value = mat.vc ? (mat.vc * mult.vc).toFixed(2) : '';
+  document.getElementById('fz').value = mat.fz ? (mat.fz * mult.fz).toFixed(3) : '';
   document.getElementById('flutes').value = tool.default_flutes;
-  // ap = recommended_ap_ratio * tool_diameter (if tool_diameter is set)
   const toolDiameter = parseFloat(document.getElementById('tool_diameter').value) || 0;
-  document.getElementById('ap').value = toolDiameter ? (tool.recommended_ap_ratio * toolDiameter).toFixed(2) : '';
-  document.getElementById('ae').value = toolDiameter ? (tool.recommended_ae_ratio * toolDiameter).toFixed(2) : '';
+
+  // Tool type-specific logic
+  if (toolType === 'Face Mill') {
+    document.getElementById('ap').value = toolDiameter ? (0.1 * toolDiameter).toFixed(2) : '';
+    document.getElementById('ae').value = toolDiameter ? (1.0 * toolDiameter).toFixed(2) : '';
+  } else if (toolType === 'Ball Mill') {
+    document.getElementById('ap').value = toolDiameter ? (0.6 * toolDiameter).toFixed(2) : '';
+    document.getElementById('ae').value = toolDiameter ? (0.4 * toolDiameter).toFixed(2) : '';
+  } else if (toolType === 'Drill') {
+    document.getElementById('ap').value = toolDiameter ? (2.0 * toolDiameter).toFixed(2) : '';
+    document.getElementById('ae').value = toolDiameter ? (1.0 * toolDiameter).toFixed(2) : '';
+    document.getElementById('flutes').value = 2;
+  } else if (toolType === 'Chamfer Mill') {
+    document.getElementById('ap').value = '';
+    document.getElementById('ae').value = '';
+  } else if (toolType === 'Corner Radius Mill') {
+    const radius = parseFloat(document.getElementById('corner_radius').value) || 0;
+    document.getElementById('ap').value = radius ? (0.5 * radius).toFixed(2) : '';
+    document.getElementById('ae').value = radius ? (0.5 * radius).toFixed(2) : '';
+  } else {
+    document.getElementById('ap').value = toolDiameter ? (tool.recommended_ap_ratio * toolDiameter).toFixed(2) : '';
+    document.getElementById('ae').value = toolDiameter ? (tool.recommended_ae_ratio * toolDiameter).toFixed(2) : '';
+  }
 }
-// Event listeners
 window.addEventListener('DOMContentLoaded', function() {
   document.getElementById('material').addEventListener('change', autoPopulateFields);
   document.getElementById('tool_type').addEventListener('change', autoPopulateFields);
   document.getElementById('tool_diameter').addEventListener('input', autoPopulateFields);
+  document.getElementById('corner_radius').addEventListener('input', autoPopulateFields);
+  document.querySelector('select[name="tool_material"]').addEventListener('change', autoPopulateFields);
   // Initial population
   autoPopulateFields();
 });

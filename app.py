@@ -36,6 +36,11 @@ def index():
             fz = float(fz_val) if fz_val not in (None, "") else None
             tool_material = request.form.get('tool_material', 'Carbide')
 
+            corner_radius_val = request.form.get('corner_radius')
+            corner_radius = float(corner_radius_val) if corner_radius_val not in (None, "") else None
+            chamfer_angle_val = request.form.get('chamfer_angle')
+            chamfer_angle = float(chamfer_angle_val) if chamfer_angle_val not in (None, "") else None
+
             result = calculate_all(
                 tool_type=tool_type,
                 material=material,
@@ -46,7 +51,9 @@ def index():
                 vc_override=vc,
                 fz_override=fz,
                 tool_life_override=tool_life,
-                tool_material=tool_material
+                tool_material=tool_material,
+                corner_radius=corner_radius,
+                chamfer_angle=chamfer_angle
             )
 
             if 'export_pdf' in request.form:

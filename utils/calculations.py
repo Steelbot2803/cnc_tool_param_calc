@@ -76,31 +76,46 @@ def calculate_all(
     vc_override=None,
     fz_override=None,
     tool_life_override=None,
-    tool_material='Carbide'
+    tool_material='Carbide',
+    corner_radius=None,
+    chamfer_angle=None
 ):
     from data.material_data import MATERIAL_DATA
     from data.tool_types import TOOL_TYPES
 
+    TOOL_MATERIAL_MULTIPLIERS = {
+        "HSS": {"vc": 1, "fz": 1},
+        "Carbide": {"vc": 2, "fz": 1.1},
+        "Coated Carbide": {"vc": 2.5, "fz": 1.15},
+        "Ceramic": {"vc": 3, "fz": 1.2},
+        "CBN": {"vc": 4, "fz": 1.2},
+        "PCD": {"vc": 5, "fz": 1.2}
+    }
+
     # Get base values from material data
     material_props = MATERIAL_DATA.get(material, {"vc": 100, "fz": 0.1})
-    vc = vc_override if vc_override is not None else material_props["vc"]
-    fz = fz_override if fz_override is not None else material_props["fz"]
+    mult = TOOL_MATERIAL_MULTIPLIERS.get(tool_material, {"vc": 1, "fz": 1})
+    vc = vc_override if vc_override is not None else material_props["vc"] * mult["vc"]
+    fz = fz_override if fz_override is not None else material_props["fz"] * mult["fz"]
 
     tool_material_factor = get_tool_material_factor(tool_material)
     material_factor = 1.0  # Could be refined per material
 
+    # Tool type-specific logic for ap/ae
+    if tool_type == 'Corner Radius Mill' and corner_radius is not None:
+        ap = min(ap, corner_radius)
+        ae = min(ae, corner_radius)
+    if tool_type == 'Chamfer Mill' and chamfer_angle is not None and ae > 0:
+        import math
+        ap = ae * math.tan(math.radians(chamfer_angle / 2))
+
     # If tool_life_override is provided, optimize for tool life by adjusting vc (cutting speed)
     calculated_tool_life = None
     if tool_life_override is not None:
-        # Try to adjust vc to achieve the target tool life, keeping fz constant
-        # Rearranged: tool_life = (tool_material_factor * material_factor) / (vc * fz * 1000)
-        # => vc = (tool_material_factor * material_factor) / (tool_life_override * fz * 1000)
         if fz > 0 and tool_life_override > 0:
             vc = (tool_material_factor * material_factor) / (tool_life_override * fz * 1000)
-        # Calculate what tool life would be with this vc
         calculated_tool_life = tool_life_override
     else:
-        # Calculate tool life with current vc and fz
         calculated_tool_life = estimate_tool_life(vc, fz, tool_material_factor, material_factor)
 
     # Calculate spindle speed and feedrate
@@ -128,5 +143,7 @@ def calculate_all(
         "tool_diameter": tool_diameter,
         "tool_type": tool_type,
         "material": material,
-        "tool_material": tool_material
+        "tool_material": tool_material,
+        "corner_radius": corner_radius,
+        "chamfer_angle": chamfer_angle
     }
