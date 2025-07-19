@@ -116,17 +116,30 @@
                     <option value="Thread Mill">Thread Mill</option>
                   </select>
                 </div>
-                <div>
-                  <label class="block text-gray-300 mb-2">Default Work Material</label>
-                  <select id="defaultMaterial" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
-                    <option value="Aluminum (6061)">Aluminum (6061)</option>
-                    <option value="Mild Steel (EN8)">Mild Steel (EN8)</option>
-                    <option value="Stainless Steel (304)">Stainless Steel (304)</option>
-                    <option value="Titanium (Grade 2)">Titanium (Grade 2)</option>
-                    <option value="Brass">Brass</option>
-                    <option value="Cast Iron">Cast Iron</option>
-                  </select>
-                </div>
+                                 <div>
+                   <label class="block text-gray-300 mb-2">Default Material Category</label>
+                   <select id="defaultMaterialCategory" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
+                     <option value="aluminum">Aluminum</option>
+                     <option value="mild_steel">Mild Steel</option>
+                     <option value="stainless_steel">Stainless Steel</option>
+                     <option value="titanium">Titanium</option>
+                     <option value="tool_steel">Tool Steel</option>
+                     <option value="cast_iron">Cast Iron</option>
+                     <option value="brass_bronze">Brass & Bronze</option>
+                     <option value="other">Other Materials</option>
+                   </select>
+                 </div>
+                 <div>
+                   <label class="block text-gray-300 mb-2">Default Work Material</label>
+                   <select id="defaultMaterial" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
+                     <option value="Aluminum (6061)">Aluminum (6061)</option>
+                     <option value="Mild Steel (EN8)">Mild Steel (EN8)</option>
+                     <option value="Stainless Steel (304)">Stainless Steel (304)</option>
+                     <option value="Titanium (Grade 2)">Titanium (Grade 2)</option>
+                     <option value="Brass">Brass</option>
+                     <option value="Cast Iron">Cast Iron</option>
+                   </select>
+                 </div>
               </div>
             </div>
 
@@ -235,14 +248,25 @@
             <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The material you are machining.</span>
           </span>
         </label>
-        <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-          {% for m in materials %}
-          <button type="button" 
-                  class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600"
-                  data-value="{{ m }}">
-            {{ m }}
-          </button>
-          {% endfor %}
+        
+        <!-- Material Category Selector -->
+        <div class="mb-3">
+          <select id="materialCategory" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500 text-sm">
+            <option value="">Select Material Category</option>
+            <option value="mild_steel">Mild Steel</option>
+            <option value="stainless_steel">Stainless Steel</option>
+            <option value="aluminum">Aluminum</option>
+            <option value="titanium">Titanium</option>
+            <option value="tool_steel">Tool Steel</option>
+            <option value="cast_iron">Cast Iron</option>
+            <option value="brass_bronze">Brass & Bronze</option>
+            <option value="other">Other Materials</option>
+          </select>
+        </div>
+        
+        <!-- Material Buttons Container -->
+        <div id="materialButtons" class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+          <!-- Materials will be populated here based on category selection -->
         </div>
         <input type="hidden" id="material" name="material" value="{{ materials[0] if materials else '' }}">
       </div>
@@ -497,6 +521,66 @@ const MATERIAL_DATA = {
   "Tool Steel (O1)": {"vc": 45, "fz": 0.07},
   "Inconel": {"vc": 20, "fz": 0.03}
 };
+
+// Categorized material data
+const MATERIAL_CATEGORIES = {
+  "mild_steel": {
+    name: "Mild Steel",
+    materials: [
+      "Mild Steel (EN1A)",
+      "Mild Steel (EN8)", 
+      "Mild Steel (EN24)"
+    ]
+  },
+  "stainless_steel": {
+    name: "Stainless Steel",
+    materials: [
+      "Stainless Steel (304)",
+      "Stainless Steel (316)",
+      "17-4 PH Stainless"
+    ]
+  },
+  "aluminum": {
+    name: "Aluminum",
+    materials: [
+      "Aluminum (6061)",
+      "Aluminum (7075)"
+    ]
+  },
+  "titanium": {
+    name: "Titanium",
+    materials: [
+      "Titanium (Grade 2)",
+      "Titanium (Grade 5)"
+    ]
+  },
+  "tool_steel": {
+    name: "Tool Steel",
+    materials: [
+      "Tool Steel (D2)",
+      "Tool Steel (O1)"
+    ]
+  },
+  "cast_iron": {
+    name: "Cast Iron",
+    materials: [
+      "Cast Iron"
+    ]
+  },
+  "brass_bronze": {
+    name: "Brass & Bronze",
+    materials: [
+      "Brass",
+      "Bronze"
+    ]
+  },
+  "other": {
+    name: "Other Materials",
+    materials: [
+      "Inconel"
+    ]
+  }
+};
 const TOOL_TYPES = {
   "End Mill": {"recommended_ae_ratio": 0.5, "recommended_ap_ratio": 1.0, "default_flutes": 4},
   "Ball Mill": {"recommended_ae_ratio": 0.4, "recommended_ap_ratio": 0.6, "default_flutes": 2},
@@ -576,24 +660,25 @@ window.addEventListener('DOMContentLoaded', function() {
     const exportSettings = document.getElementById('exportSettings');
     const importSettings = document.getElementById('importSettings');
 
-    // Default settings
-    const defaultSettings = {
-      units: 'metric',
-      decimalPlaces: '2',
-      showTooltips: true,
-      autoPopulate: true,
-      showWarnings: true,
-      chipThinning: true,
-      toolLifeEstimation: true,
-      maxSpindleSpeed: 8000,
-      maxFeedRate: 5000,
-      machinePower: 5.5,
-      defaultToolType: 'End Mill',
-      defaultMaterial: 'Aluminum (6061)',
-      includeWarnings: true,
-      includeMachineLimits: true,
-      pdfTemplate: 'detailed'
-    };
+         // Default settings
+     const defaultSettings = {
+       units: 'metric',
+       decimalPlaces: '2',
+       showTooltips: true,
+       autoPopulate: true,
+       showWarnings: true,
+       chipThinning: true,
+       toolLifeEstimation: true,
+       maxSpindleSpeed: 8000,
+       maxFeedRate: 5000,
+       machinePower: 5.5,
+       defaultToolType: 'End Mill',
+       defaultMaterialCategory: 'aluminum',
+       defaultMaterial: 'Aluminum (6061)',
+       includeWarnings: true,
+       includeMachineLimits: true,
+       pdfTemplate: 'detailed'
+     };
 
     // Load settings from localStorage
     function loadSettings() {
@@ -611,9 +696,10 @@ window.addEventListener('DOMContentLoaded', function() {
       document.getElementById('maxSpindleSpeed').value = settings.maxSpindleSpeed;
       document.getElementById('maxFeedRate').value = settings.maxFeedRate;
       document.getElementById('machinePower').value = settings.machinePower;
-      document.getElementById('defaultToolType').value = settings.defaultToolType;
-      document.getElementById('defaultMaterial').value = settings.defaultMaterial;
-      document.getElementById('includeWarnings').checked = settings.includeWarnings;
+             document.getElementById('defaultToolType').value = settings.defaultToolType;
+       document.getElementById('defaultMaterialCategory').value = settings.defaultMaterialCategory || 'aluminum';
+       document.getElementById('defaultMaterial').value = settings.defaultMaterial;
+       document.getElementById('includeWarnings').checked = settings.includeWarnings;
       document.getElementById('includeMachineLimits').checked = settings.includeMachineLimits;
       document.getElementById('pdfTemplate').value = settings.pdfTemplate;
       
@@ -672,6 +758,13 @@ window.addEventListener('DOMContentLoaded', function() {
         document.getElementById('tool_type').value = settings.defaultToolType;
         // Update button states
         updateButtonStates();
+      }
+      
+      if (settings.defaultMaterialCategory) {
+        document.getElementById('materialCategory').value = settings.defaultMaterialCategory;
+        // Trigger category change to load materials
+        const event = new Event('change');
+        document.getElementById('materialCategory').dispatchEvent(event);
       }
       
       if (settings.defaultMaterial) {
@@ -899,22 +992,51 @@ window.addEventListener('DOMContentLoaded', function() {
       });
     });
 
-    // Material buttons
-    document.querySelectorAll('.material-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
-        // Remove active state from all buttons
-        document.querySelectorAll('.material-btn').forEach(b => {
-          b.classList.remove('bg-green-600', 'border-green-500', 'text-white');
-          b.classList.add('bg-gray-800', 'border-gray-700', 'text-gray-300');
+    // Material category selector
+    const materialCategory = document.getElementById('materialCategory');
+    materialCategory.addEventListener('change', function() {
+      const category = this.value;
+      const materialButtons = document.getElementById('materialButtons');
+      
+      // Clear existing buttons
+      materialButtons.innerHTML = '';
+      
+      if (category && MATERIAL_CATEGORIES[category]) {
+        const materials = MATERIAL_CATEGORIES[category].materials;
+        
+        materials.forEach(material => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600';
+          button.dataset.value = material;
+          button.textContent = material;
+          
+          button.addEventListener('click', function() {
+            // Remove active state from all buttons
+            document.querySelectorAll('.material-btn').forEach(b => {
+              b.classList.remove('bg-green-600', 'border-green-500', 'text-white');
+              b.classList.add('bg-gray-800', 'border-gray-700', 'text-gray-300');
+            });
+            // Add active state to clicked button
+            this.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
+            this.classList.add('bg-green-600', 'border-green-500', 'text-white');
+            // Update hidden input
+            document.getElementById('material').value = this.dataset.value;
+            // Trigger auto-populate
+            autoPopulateFields();
+          });
+          
+          materialButtons.appendChild(button);
         });
-        // Add active state to clicked button
-        this.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
-        this.classList.add('bg-green-600', 'border-green-500', 'text-white');
-        // Update hidden input
-        document.getElementById('material').value = this.dataset.value;
-        // Trigger auto-populate
-        autoPopulateFields();
-      });
+        
+        // Auto-select first material in category
+        if (materials.length > 0) {
+          const firstButton = materialButtons.querySelector('.material-btn');
+          if (firstButton) {
+            firstButton.click();
+          }
+        }
+      }
     });
 
     // Set initial active states
@@ -1020,6 +1142,13 @@ window.addEventListener('DOMContentLoaded', function() {
   setTimeout(() => {
     autoPopulateFields();
     console.log('Initial autoPopulateFields called');
+    
+    // Set default material category if none selected
+    const materialCategory = document.getElementById('materialCategory');
+    if (!materialCategory.value) {
+      materialCategory.value = 'aluminum';
+      materialCategory.dispatchEvent(new Event('change'));
+    }
   }, 100);
 });
 </script>
