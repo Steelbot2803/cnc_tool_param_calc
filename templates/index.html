@@ -381,7 +381,7 @@ function autoPopulateFields() {
   } else if (toolType === 'Thread Mill') {
     document.getElementById('ap').value = '';
     document.getElementById('ae').value = '';
-    document.getElementById('thread_pitch').value = '';
+    // Don't clear thread_pitch - let user enter it manually
   } else {
     document.getElementById('ap').value = toolDiameter ? (tool.recommended_ap_ratio * toolDiameter).toFixed(3) : '';
     document.getElementById('ae').value = toolDiameter ? (tool.recommended_ae_ratio * toolDiameter).toFixed(3) : '';
@@ -521,7 +521,7 @@ window.addEventListener('DOMContentLoaded', function() {
     } else if (toolType === 'Thread Mill') {
       document.getElementById('ap').value = '';
       document.getElementById('ae').value = '';
-      document.getElementById('thread_pitch').value = '';
+      // Don't clear thread_pitch - let user enter it manually
     } else {
       document.getElementById('ap').value = toolDiameter ? (tool.recommended_ap_ratio * toolDiameter).toFixed(3) : '';
       document.getElementById('ae').value = toolDiameter ? (tool.recommended_ae_ratio * toolDiameter).toFixed(3) : '';
