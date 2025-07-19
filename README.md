@@ -1,6 +1,6 @@
 # CNC Tool Parameter Calculator
 
-A Progressive Web App (PWA) for calculating and comparing CNC machining parameters across tool types and materials. Includes tool life estimation, force and power predictions, export to PDF, and smart defaults with safe field ranges.
+A Progressive Web App (PWA) for calculating and comparing CNC machining parameters across tool types and materials. Includes tool life estimation, force and power predictions, export to PDF, and beginner-to-expert profiles.
 
 ## 🌐 Live App
 
@@ -13,7 +13,7 @@ A Progressive Web App (PWA) for calculating and comparing CNC machining paramete
 * Tool material options: Carbide, HSS, Coated variants
 * Force & power estimation
 * Tool life calculator with safety constraints
-* Smart field defaults (auto-fills feed and speed by tool/material)
+* User Profiles: Beginner → Expert
 * PDF report export (basic & detailed)
 * PWA: Mobile installable, offline-first
 * Fully responsive dark UI
@@ -35,8 +35,7 @@ A Progressive Web App (PWA) for calculating and comparing CNC machining paramete
 │   └── calculations.py     # Core formulas
 ├── data/
 │   ├── material_data.py    # Material Vc and fz presets
-│   ├── tool_types.py       # Tool type config
-│   └── profiles.py         # (Deprecated - removed in favor of smart defaults)
+│   └── tool_types.py       # Tool type config
 ├── .well-known/
 │   └── assetlinks.json     # Android TWA support
 ├── requirements.txt        # Python dependencies
