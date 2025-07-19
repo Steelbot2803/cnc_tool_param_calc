@@ -162,6 +162,23 @@
         <span class="font-bold">Error:</span> {{ result.error }}
       </div>
     {% else %}
+      <!-- Warnings Section -->
+      {% if result.warnings %}
+        <div class="mt-6 p-4 bg-red-900 text-red-300 rounded-lg shadow">
+          <h4 class="font-bold mb-2 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+            Warnings
+          </h4>
+          <ul class="list-disc list-inside space-y-1 text-sm">
+            {% for warning in result.warnings %}
+              <li>{{ warning }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      
       <div class="mt-8 flex flex-col items-center">
         <div class="w-full max-w-md bg-gray-900 rounded-xl shadow-lg p-4 flex flex-col items-center">
           <img src="/static/icon-192.png" alt="Result Icon" class="w-12 h-12 mb-2 rounded-lg">
@@ -187,30 +204,54 @@
                 <span class="font-semibold">{{ result.flutes }}</span>
               </div>
             </div>
+            {% if result.effective_diameter and result.effective_diameter != result.tool_diameter %}
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Effective Diameter (mm)</span>
+                <span class="font-semibold text-blue-400">{{ result.effective_diameter|round(3) }}</span>
+              </div>
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Tool Material</span>
+                <span class="font-semibold">{{ result.tool_material }}</span>
+              </div>
+            </div>
+            {% endif %}
             <div class="grid grid-cols-2 gap-2">
               <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
                 <span class="text-xs text-gray-400">ap (mm)</span>
-                <span class="font-semibold">{{ result.ap }}</span>
+                <span class="font-semibold">{{ result.ap|round(3) }}</span>
               </div>
               <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
                 <span class="text-xs text-gray-400">ae (mm)</span>
-                <span class="font-semibold">{{ result.ae }}</span>
+                <span class="font-semibold">{{ result.ae|round(3) }}</span>
               </div>
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
                 <span class="text-xs text-gray-400">Vc (m/min)</span>
-                <span class="font-semibold">{{ result.vc }}</span>
+                <span class="font-semibold">{{ result.vc|round(3) }}</span>
               </div>
               <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
                 <span class="text-xs text-gray-400">fz (mm)</span>
-                <span class="font-semibold">{{ result.fz }}</span>
+                <span class="font-semibold">{{ result.fz|round(3) }}</span>
               </div>
             </div>
+            {% if result.chip_thinning_applies and result.fz_adjusted %}
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-blue-900 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-blue-300">Chip Thinning Applied</span>
+                <span class="font-semibold text-blue-400">fz adjusted: {{ result.fz_adjusted|round(3) }}</span>
+              </div>
+              <div class="bg-blue-900 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-blue-300">ae/D Ratio</span>
+                <span class="font-semibold text-blue-400">{{ (result.ae / result.tool_diameter)|round(3) }}</span>
+              </div>
+            </div>
+            {% endif %}
             <div class="grid grid-cols-2 gap-2">
               <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
                 <span class="text-xs text-gray-400">Spindle Speed (rpm)</span>
-                <span class="font-semibold">{{ result.spindle_speed|round(2) }}</span>
+                <span class="font-semibold">{{ result.spindle_speed|round(0) }}</span>
               </div>
               <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
                 <span class="text-xs text-gray-400">Feedrate (mm/min)</span>
