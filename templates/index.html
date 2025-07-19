@@ -1,96 +1,161 @@
 {% extends 'base.html' %}
 {% block content %}
-<section class="p-4 md:p-8">
-  <form method="POST">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-      <!-- Profile and Tool Type -->
+<section class="w-full max-w-lg mx-auto p-2 md:p-4">
+  <div class="flex flex-col items-center mb-4">
+    <img src="/static/icon-192.png" alt="App Icon" class="w-16 h-16 mb-2 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-semibold text-center mb-1">CNC Tool Parameter Calculator</h2>
+    <p class="text-gray-400 text-center text-sm">Fast, smart, and mobile-friendly machining assistant</p>
+  </div>
+  <form method="POST" class="bg-gray-900 rounded-xl shadow-lg p-4 md:p-6 flex flex-col gap-3">
+    <div class="grid grid-cols-1 gap-3">
       <div>
-        <label class="text-white">Tool Type</label>
-        <select id="tool_type" name="tool_type" class="w-full p-2 rounded bg-gray-800 text-white">
+        <label class="block text-gray-300 mb-1">Tool Type</label>
+        <select id="tool_type" name="tool_type" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
           {% for t in tool_types %}
           <option value="{{ t }}" {% if t == selected_tool %}selected{% endif %}>{{ t }}</option>
           {% endfor %}
         </select>
       </div>
-
-      <!-- Material and Tool Material -->
       <div>
-        <label class="text-white">Work Material</label>
-        <select id="material" name="material" class="w-full p-2 rounded bg-gray-800 text-white">
+        <label class="block text-gray-300 mb-1">Work Material</label>
+        <select id="material" name="material" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
           {% for m in materials %}
           <option value="{{ m }}">{{ m }}</option>
           {% endfor %}
         </select>
       </div>
-
       <div>
-        <label class="text-white">Tool Material</label>
-        <select name="tool_material" class="w-full p-2 rounded bg-gray-800 text-white">
+        <label class="block text-gray-300 mb-1">Tool Material</label>
+        <select name="tool_material" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
           <option value="Carbide">Carbide</option>
           <option value="HSS">HSS</option>
         </select>
       </div>
-
-      <!-- Tool Geometry -->
       <div>
-        <label class="text-white">Tool Diameter (mm)</label>
-        <input id="tool_diameter" type="number" step="0.01" name="tool_diameter" class="w-full p-2 rounded bg-gray-800 text-white">
+        <label class="block text-gray-300 mb-1">Tool Diameter (mm)</label>
+        <input id="tool_diameter" type="number" step="0.01" name="tool_diameter" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="text-white">Flutes (Cutting Edges)</label>
-        <input id="flutes" type="number" name="flutes" class="w-full p-2 rounded bg-gray-800 text-white">
+        <label class="block text-gray-300 mb-1">Flutes (Cutting Edges)</label>
+        <input id="flutes" type="number" name="flutes" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="text-white">ap (Axial Depth, mm)</label>
-        <input id="ap" type="number" step="0.01" name="ap" class="w-full p-2 rounded bg-gray-800 text-white">
+        <label class="block text-gray-300 mb-1">ap (Axial Depth, mm)</label>
+        <input id="ap" type="number" step="0.01" name="ap" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="text-white">ae (Radial Depth, mm)</label>
-        <input id="ae" type="number" step="0.01" name="ae" class="w-full p-2 rounded bg-gray-800 text-white">
-      </div>
-
-      <!-- Optional Overrides -->
-      <div>
-        <label class="text-white">Override Cutting Speed Vc (m/min)</label>
-        <input id="vc" type="number" step="0.1" name="vc" class="w-full p-2 rounded bg-gray-800 text-white">
+        <label class="block text-gray-300 mb-1">ae (Radial Depth, mm)</label>
+        <input id="ae" type="number" step="0.01" name="ae" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="text-white">Override Feed per Tooth fz (mm)</label>
-        <input id="fz" type="number" step="0.01" name="fz" class="w-full p-2 rounded bg-gray-800 text-white">
+        <label class="block text-gray-300 mb-1">Override Cutting Speed Vc (m/min)</label>
+        <input id="vc" type="number" step="0.1" name="vc" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
       <div>
-        <label class="text-white">Target Tool Life (min, optional)</label>
-        <input type="number" step="1" name="tool_life" class="w-full p-2 rounded bg-gray-800 text-white">
+        <label class="block text-gray-300 mb-1">Override Feed per Tooth fz (mm)</label>
+        <input id="fz" type="number" step="0.01" name="fz" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
       </div>
-
-      <!-- Report Type -->
       <div>
-        <label class="text-white">Report Type</label>
-        <select name="report_type" class="w-full p-2 rounded bg-gray-800 text-white">
+        <label class="block text-gray-300 mb-1">Target Tool Life (min, optional)</label>
+        <input type="number" step="1" name="tool_life" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" autocomplete="off">
+      </div>
+      <div>
+        <label class="block text-gray-300 mb-1">Report Type</label>
+        <select name="report_type" class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
           <option value="basic">Basic</option>
           <option value="detailed">Detailed</option>
         </select>
       </div>
     </div>
-
-    <div class="mt-6 flex gap-4">
-      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Calculate</button>
-      <button name="export_pdf" value="true" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Export PDF</button>
+    <div class="mt-6 flex flex-col gap-3">
+      <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-semibold shadow">Calculate</button>
+      <button name="export_pdf" value="true" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-semibold shadow">Export PDF</button>
     </div>
   </form>
 
   {% if result %}
     {% if result.error %}
-      <p class="text-red-500 mt-4">Error: {{ result.error }}</p>
+      <div class="mt-6 p-4 bg-red-900 text-red-300 rounded-lg shadow text-center">
+        <span class="font-bold">Error:</span> {{ result.error }}
+      </div>
     {% else %}
-      <div class="mt-8 text-white">
-        <h2 class="text-xl font-bold mb-2">Calculation Results:</h2>
-        <ul class="space-y-1">
-          {% for k, v in result.items() %}
-            <li><strong>{{ k }}:</strong> {{ v }}</li>
-          {% endfor %}
-        </ul>
+      <div class="mt-8 flex flex-col items-center">
+        <div class="w-full max-w-md bg-gray-900 rounded-xl shadow-lg p-4 flex flex-col items-center">
+          <img src="/static/icon-192.png" alt="Result Icon" class="w-12 h-12 mb-2 rounded-lg">
+          <h3 class="text-lg font-bold mb-2 text-green-400">Calculation Results</h3>
+          <div class="w-full grid grid-cols-1 gap-2">
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Tool Type</span>
+                <span class="font-semibold">{{ result.tool_type }}</span>
+              </div>
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Material</span>
+                <span class="font-semibold">{{ result.material }}</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Tool Diameter (mm)</span>
+                <span class="font-semibold">{{ result.tool_diameter }}</span>
+              </div>
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Flutes</span>
+                <span class="font-semibold">{{ result.flutes }}</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">ap (mm)</span>
+                <span class="font-semibold">{{ result.ap }}</span>
+              </div>
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">ae (mm)</span>
+                <span class="font-semibold">{{ result.ae }}</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Vc (m/min)</span>
+                <span class="font-semibold">{{ result.vc }}</span>
+              </div>
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">fz (mm)</span>
+                <span class="font-semibold">{{ result.fz }}</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Spindle Speed (rpm)</span>
+                <span class="font-semibold">{{ result.spindle_speed|round(2) }}</span>
+              </div>
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Feedrate (mm/min)</span>
+                <span class="font-semibold">{{ result.feedrate|round(2) }}</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">MRR (mm³/min)</span>
+                <span class="font-semibold">{{ result.mrr|round(2) }}</span>
+              </div>
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Cutting Force (N)</span>
+                <span class="font-semibold">{{ result.cutting_force|round(2) }}</span>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Cutting Power (kW)</span>
+                <span class="font-semibold">{{ result.cutting_power|round(3) }}</span>
+              </div>
+              <div class="bg-gray-800 rounded-lg p-3 flex flex-col items-start">
+                <span class="text-xs text-gray-400">Tool Life (min)</span>
+                <span class="font-semibold">{{ result.tool_life|round(2) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     {% endif %}
   {% endif %}
