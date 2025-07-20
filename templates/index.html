@@ -249,24 +249,119 @@
           </span>
         </label>
         
-        <!-- Material Category Selector -->
-        <div class="mb-3">
-          <select id="materialCategory" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500 text-sm">
-            <option value="">Select Material Category</option>
-            <option value="mild_steel">Mild Steel</option>
-            <option value="stainless_steel">Stainless Steel</option>
-            <option value="aluminum">Aluminum</option>
-            <option value="titanium">Titanium</option>
-            <option value="tool_steel">Tool Steel</option>
-            <option value="cast_iron">Cast Iron</option>
-            <option value="brass_bronze">Brass & Bronze</option>
-            <option value="other">Other Materials</option>
-          </select>
-        </div>
-        
-        <!-- Material Buttons Container -->
-        <div id="materialButtons" class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-          <!-- Materials will be populated here based on category selection -->
+        <!-- Material Categories -->
+        <div class="space-y-3">
+          <!-- Mild Steel Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="mild_steel">
+              <span>Mild Steel</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Mild Steel (EN1A)">Mild Steel (EN1A)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Mild Steel (EN8)">Mild Steel (EN8)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Mild Steel (EN24)">Mild Steel (EN24)</button>
+            </div>
+          </div>
+
+          <!-- Stainless Steel Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="stainless_steel">
+              <span>Stainless Steel</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Stainless Steel (304)">Stainless Steel (304)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Stainless Steel (316)">Stainless Steel (316)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="17-4 PH Stainless">17-4 PH Stainless</button>
+            </div>
+          </div>
+
+          <!-- Aluminum Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="aluminum">
+              <span>Aluminum</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Aluminum (6061)">Aluminum (6061)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Aluminum (7075)">Aluminum (7075)</button>
+            </div>
+          </div>
+
+          <!-- Titanium Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="titanium">
+              <span>Titanium</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Titanium (Grade 2)">Titanium (Grade 2)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Titanium (Grade 5)">Titanium (Grade 5)</button>
+            </div>
+          </div>
+
+          <!-- Tool Steel Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="tool_steel">
+              <span>Tool Steel</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Tool Steel (D2)">Tool Steel (D2)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Tool Steel (O1)">Tool Steel (O1)</button>
+            </div>
+          </div>
+
+          <!-- Cast Iron Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="cast_iron">
+              <span>Cast Iron</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Cast Iron">Cast Iron</button>
+            </div>
+          </div>
+
+          <!-- Brass & Bronze Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="brass_bronze">
+              <span>Brass & Bronze</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Brass">Brass</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Bronze">Bronze</button>
+            </div>
+          </div>
+
+          <!-- Other Materials Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="other">
+              <span>Other Materials</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Inconel">Inconel</button>
+            </div>
+          </div>
         </div>
         <input type="hidden" id="material" name="material" value="{{ materials[0] if materials else '' }}">
       </div>
@@ -522,65 +617,7 @@ const MATERIAL_DATA = {
   "Inconel": {"vc": 20, "fz": 0.03}
 };
 
-// Categorized material data
-const MATERIAL_CATEGORIES = {
-  "mild_steel": {
-    name: "Mild Steel",
-    materials: [
-      "Mild Steel (EN1A)",
-      "Mild Steel (EN8)", 
-      "Mild Steel (EN24)"
-    ]
-  },
-  "stainless_steel": {
-    name: "Stainless Steel",
-    materials: [
-      "Stainless Steel (304)",
-      "Stainless Steel (316)",
-      "17-4 PH Stainless"
-    ]
-  },
-  "aluminum": {
-    name: "Aluminum",
-    materials: [
-      "Aluminum (6061)",
-      "Aluminum (7075)"
-    ]
-  },
-  "titanium": {
-    name: "Titanium",
-    materials: [
-      "Titanium (Grade 2)",
-      "Titanium (Grade 5)"
-    ]
-  },
-  "tool_steel": {
-    name: "Tool Steel",
-    materials: [
-      "Tool Steel (D2)",
-      "Tool Steel (O1)"
-    ]
-  },
-  "cast_iron": {
-    name: "Cast Iron",
-    materials: [
-      "Cast Iron"
-    ]
-  },
-  "brass_bronze": {
-    name: "Brass & Bronze",
-    materials: [
-      "Brass",
-      "Bronze"
-    ]
-  },
-  "other": {
-    name: "Other Materials",
-    materials: [
-      "Inconel"
-    ]
-  }
-};
+
 const TOOL_TYPES = {
   "End Mill": {"recommended_ae_ratio": 0.5, "recommended_ap_ratio": 1.0, "default_flutes": 4},
   "Ball Mill": {"recommended_ae_ratio": 0.4, "recommended_ap_ratio": 0.6, "default_flutes": 2},
@@ -992,51 +1029,43 @@ window.addEventListener('DOMContentLoaded', function() {
       });
     });
 
-    // Material category selector
-    const materialCategory = document.getElementById('materialCategory');
-    materialCategory.addEventListener('change', function() {
-      const category = this.value;
-      const materialButtons = document.getElementById('materialButtons');
-      
-      // Clear existing buttons
-      materialButtons.innerHTML = '';
-      
-      if (category && MATERIAL_CATEGORIES[category]) {
-        const materials = MATERIAL_CATEGORIES[category].materials;
+    // Material category expandable buttons
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const category = this.dataset.category;
+        const subcategory = this.parentElement.querySelector('.material-subcategory');
+        const arrow = this.querySelector('svg');
         
-        materials.forEach(material => {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600';
-          button.dataset.value = material;
-          button.textContent = material;
-          
-          button.addEventListener('click', function() {
-            // Remove active state from all buttons
-            document.querySelectorAll('.material-btn').forEach(b => {
-              b.classList.remove('bg-green-600', 'border-green-500', 'text-white');
-              b.classList.add('bg-gray-800', 'border-gray-700', 'text-gray-300');
-            });
-            // Add active state to clicked button
-            this.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
-            this.classList.add('bg-green-600', 'border-green-500', 'text-white');
-            // Update hidden input
-            document.getElementById('material').value = this.dataset.value;
-            // Trigger auto-populate
-            autoPopulateFields();
-          });
-          
-          materialButtons.appendChild(button);
+        // Close all other categories
+        document.querySelectorAll('.material-subcategory').forEach(sub => {
+          if (sub !== subcategory) {
+            sub.classList.add('hidden');
+            sub.parentElement.querySelector('.category-btn svg').classList.remove('rotate-180');
+          }
         });
         
-        // Auto-select first material in category
-        if (materials.length > 0) {
-          const firstButton = materialButtons.querySelector('.material-btn');
-          if (firstButton) {
-            firstButton.click();
-          }
-        }
-      }
+        // Toggle current category
+        subcategory.classList.toggle('hidden');
+        arrow.classList.toggle('rotate-180');
+      });
+    });
+
+    // Material buttons
+    document.querySelectorAll('.material-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Remove active state from all material buttons
+        document.querySelectorAll('.material-btn').forEach(b => {
+          b.classList.remove('bg-green-600', 'border-green-500', 'text-white');
+          b.classList.add('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        });
+        // Add active state to clicked button
+        this.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        this.classList.add('bg-green-600', 'border-green-500', 'text-white');
+        // Update hidden input
+        document.getElementById('material').value = this.dataset.value;
+        // Trigger auto-populate
+        autoPopulateFields();
+      });
     });
 
     // Set initial active states
@@ -1072,65 +1101,8 @@ window.addEventListener('DOMContentLoaded', function() {
   // Setup settings
   setupSettings();
 
-  // Update autoPopulateFields to work with new selectors and settings
-  const originalAutoPopulate = autoPopulateFields;
-  autoPopulateFields = function() {
-    // Check if auto-populate is enabled
-    if (window.AUTO_POPULATE_ENABLED === false) {
-      return;
-    }
-    const material = document.getElementById('material').value;
-    const toolType = document.getElementById('tool_type').value;
-    const toolMaterial = document.querySelector('input[name="tool_material"]').value;
-    
-    // Show/hide special fields
-    document.getElementById('corner-radius-group').style.display = (toolType === 'Corner Radius Mill') ? '' : 'none';
-    document.getElementById('chamfer-angle-group').style.display = (toolType === 'Chamfer Mill') ? '' : 'none';
-    document.getElementById('thread-pitch-group').style.display = (toolType === 'Thread Mill') ? '' : 'none';
-    
-    // Debug logging
-    console.log('Tool type:', toolType);
-    console.log('Thread pitch group display:', document.getElementById('thread-pitch-group').style.display);
 
-    // Rest of the function remains the same
-    const mat = MATERIAL_DATA[material] || {vc: '', fz: ''};
-    const tool = TOOL_TYPES[toolType] || {recommended_ap_ratio: '', recommended_ae_ratio: '', default_flutes: ''};
-    const mult = TOOL_MATERIAL_MULTIPLIERS[toolMaterial] || {vc: 1, fz: 1};
-    
-    document.getElementById('vc').value = mat.vc ? (mat.vc * mult.vc).toFixed(3) : '';
-    document.getElementById('fz').value = mat.fz ? (mat.fz * mult.fz).toFixed(3) : '';
-    document.getElementById('flutes').value = tool.default_flutes;
-    const toolDiameter = parseFloat(document.getElementById('tool_diameter').value) || 0;
 
-    // Tool type-specific logic
-    if (toolType === 'Face Mill') {
-      document.getElementById('ap').value = toolDiameter ? (0.1 * toolDiameter).toFixed(3) : '';
-      document.getElementById('ae').value = toolDiameter ? (1.0 * toolDiameter).toFixed(3) : '';
-    } else if (toolType === 'Ball Mill') {
-      document.getElementById('ap').value = toolDiameter ? (0.6 * toolDiameter).toFixed(3) : '';
-      document.getElementById('ae').value = toolDiameter ? (0.4 * toolDiameter).toFixed(3) : '';
-    } else if (toolType === 'Drill') {
-      document.getElementById('ap').value = toolDiameter ? (2.0 * toolDiameter).toFixed(3) : '';
-      document.getElementById('ae').value = toolDiameter ? (1.0 * toolDiameter).toFixed(3) : '';
-      document.getElementById('flutes').value = 2;
-    } else if (toolType === 'Chamfer Mill') {
-      document.getElementById('ap').value = '';
-      document.getElementById('ae').value = '';
-    } else if (toolType === 'Corner Radius Mill') {
-      const radius = parseFloat(document.getElementById('corner_radius').value) || 0;
-      document.getElementById('ap').value = radius ? (0.5 * radius).toFixed(3) : '';
-      document.getElementById('ae').value = radius ? (0.5 * radius).toFixed(3) : '';
-    } else if (toolType === 'Thread Mill') {
-      // Don't clear ap and ae for Thread Mill - let user enter them manually
-      // Only set default flutes if not already set
-      if (!document.getElementById('flutes').value) {
-        document.getElementById('flutes').value = 3;
-      }
-    } else {
-      document.getElementById('ap').value = toolDiameter ? (tool.recommended_ap_ratio * toolDiameter).toFixed(3) : '';
-      document.getElementById('ae').value = toolDiameter ? (tool.recommended_ae_ratio * toolDiameter).toFixed(3) : '';
-    }
-  };
 
   // Event listeners for other fields
   document.getElementById('tool_diameter').addEventListener('input', autoPopulateFields);
@@ -1143,11 +1115,14 @@ window.addEventListener('DOMContentLoaded', function() {
     autoPopulateFields();
     console.log('Initial autoPopulateFields called');
     
-    // Set default material category if none selected
-    const materialCategory = document.getElementById('materialCategory');
-    if (!materialCategory.value) {
-      materialCategory.value = 'aluminum';
-      materialCategory.dispatchEvent(new Event('change'));
+    // Auto-expand Aluminum category and select first material by default
+    const aluminumCategory = document.querySelector('[data-category="aluminum"]');
+    if (aluminumCategory) {
+      aluminumCategory.click();
+      const firstMaterial = aluminumCategory.parentElement.querySelector('.material-btn');
+      if (firstMaterial) {
+        firstMaterial.click();
+      }
     }
   }, 100);
 });
