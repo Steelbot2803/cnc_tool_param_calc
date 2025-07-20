@@ -1,0 +1,25 @@
+{
+  "packageId": "com.cnctoolcalc.app",
+  "host": "cnc-tool-param-calc.onrender.com",
+  "name": "CNC ToolCalc",
+  "launcherName": "CNC ToolCalc",
+  "display": "standalone",
+  "themeColor": "#16a34a",
+  "backgroundColor": "#000000",
+  "enableNotifications": true,
+  "shortcuts": [
+    {
+      "name": "Calculate",
+      "shortName": "Calc",
+      "url": "/",
+      "chosenIconUrl": "/static/icon-192.png"
+    }
+  ],
+  "iconUrl": "/static/icon-512.png",
+  "maskableIconUrl": "/static/icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "android.keystore",
+    "alias": "cnc-toolcalc"
+  }
+}

@@ -2,10 +2,198 @@
 {% block content %}
 <section class="w-full min-h-screen flex flex-col justify-center items-center bg-gray-950">
   <div class="w-full max-w-lg mx-auto p-2 md:p-4">
-    <div class="flex flex-col items-center mb-4">
+    <div class="flex flex-col items-center mb-4 relative">
+      <!-- Settings Button -->
+      <button id="settingsBtn" class="absolute top-0 right-0 p-2 text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+      </button>
+      
       <img src="/static/icon-192.png" alt="App Icon" class="w-16 h-16 mb-2 rounded-lg shadow-lg">
       <h2 class="text-2xl font-semibold text-center mb-1">CNC Tool Parameter Calculator</h2>
       <p class="text-gray-400 text-center text-sm">Fast, smart, and mobile-friendly machining assistant</p>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+      <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <!-- Settings Header -->
+          <div class="flex items-center justify-between p-6 border-b border-gray-700">
+            <h3 class="text-xl font-semibold text-white">Settings</h3>
+            <button id="closeSettings" class="text-gray-400 hover:text-white transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Settings Content -->
+          <div class="p-6 space-y-6">
+            <!-- Units Section -->
+            <div>
+              <h4 class="text-lg font-medium text-white mb-4">Units & Display</h4>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-gray-300 mb-2">Measurement Units</label>
+                  <select id="units" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
+                    <option value="metric">Metric (mm, m/min)</option>
+                    <option value="imperial">Imperial (inch, ft/min)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-gray-300 mb-2">Decimal Places</label>
+                  <select id="decimalPlaces" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
+                    <option value="1">1 decimal place</option>
+                    <option value="2">2 decimal places</option>
+                    <option value="3">3 decimal places</option>
+                  </select>
+                </div>
+                <div class="flex items-center justify-between">
+                  <label class="text-gray-300">Show Tool Tips</label>
+                  <input type="checkbox" id="showTooltips" class="w-4 h-4 text-green-600 bg-gray-800 border-gray-700 rounded focus:ring-green-500">
+                </div>
+              </div>
+            </div>
+
+            <!-- Calculation Settings -->
+            <div>
+              <h4 class="text-lg font-medium text-white mb-4">Calculation Settings</h4>
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <label class="text-gray-300">Auto-populate Fields</label>
+                  <input type="checkbox" id="autoPopulate" class="w-4 h-4 text-green-600 bg-gray-800 border-gray-700 rounded focus:ring-green-500" checked>
+                </div>
+                <div class="flex items-center justify-between">
+                  <label class="text-gray-300">Show Warnings</label>
+                  <input type="checkbox" id="showWarnings" class="w-4 h-4 text-green-600 bg-gray-800 border-gray-700 rounded focus:ring-green-500" checked>
+                </div>
+                <div class="flex items-center justify-between">
+                  <label class="text-gray-300">Chip Thinning Correction</label>
+                  <input type="checkbox" id="chipThinning" class="w-4 h-4 text-green-600 bg-gray-800 border-gray-700 rounded focus:ring-green-500" checked>
+                </div>
+                <div class="flex items-center justify-between">
+                  <label class="text-gray-300">Tool Life Estimation</label>
+                  <input type="checkbox" id="toolLifeEstimation" class="w-4 h-4 text-green-600 bg-gray-800 border-gray-700 rounded focus:ring-green-500" checked>
+                </div>
+              </div>
+            </div>
+
+            <!-- Machine Limits -->
+            <div>
+              <h4 class="text-lg font-medium text-white mb-4">Machine Limits</h4>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-gray-300 mb-2">Max Spindle Speed (rpm)</label>
+                  <input type="number" id="maxSpindleSpeed" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" placeholder="8000">
+                </div>
+                <div>
+                  <label class="block text-gray-300 mb-2">Max Feed Rate (mm/min)</label>
+                  <input type="number" id="maxFeedRate" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" placeholder="5000">
+                </div>
+                <div>
+                  <label class="block text-gray-300 mb-2">Machine Power (kW)</label>
+                  <input type="number" id="machinePower" step="0.1" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500" placeholder="5.5">
+                </div>
+              </div>
+            </div>
+
+            <!-- Default Values -->
+            <div>
+              <h4 class="text-lg font-medium text-white mb-4">Default Values</h4>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-gray-300 mb-2">Default Tool Type</label>
+                  <select id="defaultToolType" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
+                    <option value="End Mill">End Mill</option>
+                    <option value="Ball Mill">Ball Mill</option>
+                    <option value="Face Mill">Face Mill</option>
+                    <option value="Corner Radius Mill">Corner Radius Mill</option>
+                    <option value="Drill">Drill</option>
+                    <option value="Chamfer Mill">Chamfer Mill</option>
+                    <option value="Thread Mill">Thread Mill</option>
+                  </select>
+                </div>
+                                 <div>
+                   <label class="block text-gray-300 mb-2">Default Material Category</label>
+                   <select id="defaultMaterialCategory" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
+                     <option value="aluminum">Aluminum</option>
+                     <option value="mild_steel">Mild Steel</option>
+                     <option value="stainless_steel">Stainless Steel</option>
+                     <option value="titanium">Titanium</option>
+                     <option value="tool_steel">Tool Steel</option>
+                     <option value="cast_iron">Cast Iron</option>
+                     <option value="brass_bronze">Brass & Bronze</option>
+                     <option value="other">Other Materials</option>
+                   </select>
+                 </div>
+                 <div>
+                   <label class="block text-gray-300 mb-2">Default Work Material</label>
+                   <select id="defaultMaterial" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
+                     <option value="Aluminum (6061)">Aluminum (6061)</option>
+                     <option value="Mild Steel (EN8)">Mild Steel (EN8)</option>
+                     <option value="Stainless Steel (304)">Stainless Steel (304)</option>
+                     <option value="Titanium (Grade 2)">Titanium (Grade 2)</option>
+                     <option value="Brass">Brass</option>
+                     <option value="Cast Iron">Cast Iron</option>
+                   </select>
+                 </div>
+              </div>
+            </div>
+
+            <!-- Export Settings -->
+            <div>
+              <h4 class="text-lg font-medium text-white mb-4">Export Settings</h4>
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <label class="text-gray-300">Include Warnings in PDF</label>
+                  <input type="checkbox" id="includeWarnings" class="w-4 h-4 text-green-600 bg-gray-800 border-gray-700 rounded focus:ring-green-500" checked>
+                </div>
+                <div class="flex items-center justify-between">
+                  <label class="text-gray-300">Include Machine Limits</label>
+                  <input type="checkbox" id="includeMachineLimits" class="w-4 h-4 text-green-600 bg-gray-800 border-gray-700 rounded focus:ring-green-500" checked>
+                </div>
+                <div>
+                  <label class="block text-gray-300 mb-2">PDF Template</label>
+                  <select id="pdfTemplate" class="w-full p-3 rounded-xl bg-gray-800 text-white border border-gray-700 focus:ring-2 focus:ring-green-500">
+                    <option value="simple">Simple</option>
+                    <option value="detailed">Detailed</option>
+                    <option value="professional">Professional</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Data Management -->
+            <div>
+              <h4 class="text-lg font-medium text-white mb-4">Data Management</h4>
+              <div class="space-y-4">
+                <button id="exportSettings" class="w-full p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors">
+                  Export Settings
+                </button>
+                <button id="importSettings" class="w-full p-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold transition-colors">
+                  Import Settings
+                </button>
+                <button id="resetSettings" class="w-full p-3 bg-red-600 hover:bg-red-700 text-white rounded-xl font-semibold transition-colors">
+                  Reset to Defaults
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Settings Footer -->
+          <div class="flex justify-end gap-3 p-6 border-t border-gray-700">
+            <button id="cancelSettings" class="px-4 py-2 text-gray-400 hover:text-white transition-colors">
+              Cancel
+            </button>
+            <button id="saveSettings" class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl font-semibold transition-colors">
+              Save Settings
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
     <form method="POST" class="bg-gray-900 rounded-2xl shadow-lg p-4 md:p-8 flex flex-col gap-6 items-center w-full">
       <!-- Tool Info Group -->
@@ -60,14 +248,120 @@
             <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The material you are machining.</span>
           </span>
         </label>
-        <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-          {% for m in materials %}
-          <button type="button" 
-                  class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600"
-                  data-value="{{ m }}">
-            {{ m }}
-          </button>
-          {% endfor %}
+        
+        <!-- Material Categories -->
+        <div class="space-y-3">
+          <!-- Mild Steel Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="mild_steel">
+              <span>Mild Steel</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Mild Steel (EN1A)">Mild Steel (EN1A)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Mild Steel (EN8)">Mild Steel (EN8)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Mild Steel (EN24)">Mild Steel (EN24)</button>
+            </div>
+          </div>
+
+          <!-- Stainless Steel Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="stainless_steel">
+              <span>Stainless Steel</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Stainless Steel (304)">Stainless Steel (304)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Stainless Steel (316)">Stainless Steel (316)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="17-4 PH Stainless">17-4 PH Stainless</button>
+            </div>
+          </div>
+
+          <!-- Aluminum Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="aluminum">
+              <span>Aluminum</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Aluminum (6061)">Aluminum (6061)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Aluminum (7075)">Aluminum (7075)</button>
+            </div>
+          </div>
+
+          <!-- Titanium Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="titanium">
+              <span>Titanium</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Titanium (Grade 2)">Titanium (Grade 2)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Titanium (Grade 5)">Titanium (Grade 5)</button>
+            </div>
+          </div>
+
+          <!-- Tool Steel Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="tool_steel">
+              <span>Tool Steel</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Tool Steel (D2)">Tool Steel (D2)</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Tool Steel (O1)">Tool Steel (O1)</button>
+            </div>
+          </div>
+
+          <!-- Cast Iron Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="cast_iron">
+              <span>Cast Iron</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Cast Iron">Cast Iron</button>
+            </div>
+          </div>
+
+          <!-- Brass & Bronze Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="brass_bronze">
+              <span>Brass & Bronze</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Brass">Brass</button>
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Bronze">Bronze</button>
+            </div>
+          </div>
+
+          <!-- Other Materials Category -->
+          <div class="material-category">
+            <button type="button" class="category-btn w-full p-3 rounded-xl border-2 transition-all duration-200 text-sm font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600 flex items-center justify-between" data-category="other">
+              <span>Other Materials</span>
+              <svg class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="material-subcategory hidden mt-2 grid grid-cols-2 gap-2">
+              <button type="button" class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600" data-value="Inconel">Inconel</button>
+            </div>
+          </div>
         </div>
         <input type="hidden" id="material" name="material" value="{{ materials[0] if materials else '' }}">
       </div>
@@ -322,6 +616,8 @@ const MATERIAL_DATA = {
   "Tool Steel (O1)": {"vc": 45, "fz": 0.07},
   "Inconel": {"vc": 20, "fz": 0.03}
 };
+
+
 const TOOL_TYPES = {
   "End Mill": {"recommended_ae_ratio": 0.5, "recommended_ap_ratio": 1.0, "default_flutes": 4},
   "Ball Mill": {"recommended_ae_ratio": 0.4, "recommended_ap_ratio": 0.6, "default_flutes": 2},
@@ -390,6 +686,311 @@ function autoPopulateFields() {
   }
 }
 window.addEventListener('DOMContentLoaded', function() {
+  // Settings functionality
+  function setupSettings() {
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsModal = document.getElementById('settingsModal');
+    const closeSettings = document.getElementById('closeSettings');
+    const cancelSettings = document.getElementById('cancelSettings');
+    const saveSettings = document.getElementById('saveSettings');
+    const resetSettings = document.getElementById('resetSettings');
+    const exportSettings = document.getElementById('exportSettings');
+    const importSettings = document.getElementById('importSettings');
+
+         // Default settings
+     const defaultSettings = {
+       units: 'metric',
+       decimalPlaces: '2',
+       showTooltips: true,
+       autoPopulate: true,
+       showWarnings: true,
+       chipThinning: true,
+       toolLifeEstimation: true,
+       maxSpindleSpeed: 8000,
+       maxFeedRate: 5000,
+       machinePower: 5.5,
+       defaultToolType: 'End Mill',
+       defaultMaterialCategory: 'aluminum',
+       defaultMaterial: 'Aluminum (6061)',
+       includeWarnings: true,
+       includeMachineLimits: true,
+       pdfTemplate: 'detailed'
+     };
+
+    // Load settings from localStorage
+    function loadSettings() {
+      const savedSettings = localStorage.getItem('cncCalculatorSettings');
+      const settings = savedSettings ? JSON.parse(savedSettings) : defaultSettings;
+      
+      // Apply settings to form
+      document.getElementById('units').value = settings.units;
+      document.getElementById('decimalPlaces').value = settings.decimalPlaces;
+      document.getElementById('showTooltips').checked = settings.showTooltips;
+      document.getElementById('autoPopulate').checked = settings.autoPopulate;
+      document.getElementById('showWarnings').checked = settings.showWarnings;
+      document.getElementById('chipThinning').checked = settings.chipThinning;
+      document.getElementById('toolLifeEstimation').checked = settings.toolLifeEstimation;
+      document.getElementById('maxSpindleSpeed').value = settings.maxSpindleSpeed;
+      document.getElementById('maxFeedRate').value = settings.maxFeedRate;
+      document.getElementById('machinePower').value = settings.machinePower;
+             document.getElementById('defaultToolType').value = settings.defaultToolType;
+       document.getElementById('defaultMaterialCategory').value = settings.defaultMaterialCategory || 'aluminum';
+       document.getElementById('defaultMaterial').value = settings.defaultMaterial;
+       document.getElementById('includeWarnings').checked = settings.includeWarnings;
+      document.getElementById('includeMachineLimits').checked = settings.includeMachineLimits;
+      document.getElementById('pdfTemplate').value = settings.pdfTemplate;
+      
+      return settings;
+    }
+
+    // Save settings to localStorage
+    function saveSettings() {
+      const settings = {
+        units: document.getElementById('units').value,
+        decimalPlaces: document.getElementById('decimalPlaces').value,
+        showTooltips: document.getElementById('showTooltips').checked,
+        autoPopulate: document.getElementById('autoPopulate').checked,
+        showWarnings: document.getElementById('showWarnings').checked,
+        chipThinning: document.getElementById('chipThinning').checked,
+        toolLifeEstimation: document.getElementById('toolLifeEstimation').checked,
+        maxSpindleSpeed: parseInt(document.getElementById('maxSpindleSpeed').value) || 8000,
+        maxFeedRate: parseInt(document.getElementById('maxFeedRate').value) || 5000,
+        machinePower: parseFloat(document.getElementById('machinePower').value) || 5.5,
+        defaultToolType: document.getElementById('defaultToolType').value,
+        defaultMaterial: document.getElementById('defaultMaterial').value,
+        includeWarnings: document.getElementById('includeWarnings').checked,
+        includeMachineLimits: document.getElementById('includeMachineLimits').checked,
+        pdfTemplate: document.getElementById('pdfTemplate').value
+      };
+      
+      localStorage.setItem('cncCalculatorSettings', JSON.stringify(settings));
+      
+      // Apply settings to calculator
+      applySettings(settings);
+      
+      // Show success message
+      showNotification('Settings saved successfully!', 'success');
+    }
+
+    // Apply settings to calculator
+    function applySettings(settings) {
+      // Apply decimal places
+      window.DECIMAL_PLACES = parseInt(settings.decimalPlaces);
+      
+      // Apply tooltips visibility
+      const tooltips = document.querySelectorAll('[title]');
+      tooltips.forEach(tooltip => {
+        if (settings.showTooltips) {
+          tooltip.style.cursor = 'help';
+        } else {
+          tooltip.style.cursor = 'default';
+        }
+      });
+      
+      // Apply auto-populate setting
+      window.AUTO_POPULATE_ENABLED = settings.autoPopulate;
+      
+      // Apply default values
+      if (settings.defaultToolType) {
+        document.getElementById('tool_type').value = settings.defaultToolType;
+        // Update button states
+        updateButtonStates();
+      }
+      
+      if (settings.defaultMaterialCategory) {
+        document.getElementById('materialCategory').value = settings.defaultMaterialCategory;
+        // Trigger category change to load materials
+        const event = new Event('change');
+        document.getElementById('materialCategory').dispatchEvent(event);
+      }
+      
+      if (settings.defaultMaterial) {
+        document.getElementById('material').value = settings.defaultMaterial;
+        // Update button states
+        updateButtonStates();
+      }
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 p-4 rounded-xl text-white font-semibold z-50 ${
+        type === 'success' ? 'bg-green-600' : 
+        type === 'error' ? 'bg-red-600' : 'bg-blue-600'
+      }`;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // Export settings
+    function exportSettingsData() {
+      const settings = {
+        units: document.getElementById('units').value,
+        decimalPlaces: document.getElementById('decimalPlaces').value,
+        showTooltips: document.getElementById('showTooltips').checked,
+        autoPopulate: document.getElementById('autoPopulate').checked,
+        showWarnings: document.getElementById('showWarnings').checked,
+        chipThinning: document.getElementById('chipThinning').checked,
+        toolLifeEstimation: document.getElementById('toolLifeEstimation').checked,
+        maxSpindleSpeed: parseInt(document.getElementById('maxSpindleSpeed').value) || 8000,
+        maxFeedRate: parseInt(document.getElementById('maxFeedRate').value) || 5000,
+        machinePower: parseFloat(document.getElementById('machinePower').value) || 5.5,
+        defaultToolType: document.getElementById('defaultToolType').value,
+        defaultMaterial: document.getElementById('defaultMaterial').value,
+        includeWarnings: document.getElementById('includeWarnings').checked,
+        includeMachineLimits: document.getElementById('includeMachineLimits').checked,
+        pdfTemplate: document.getElementById('pdfTemplate').value
+      };
+      
+      const dataStr = JSON.stringify(settings, null, 2);
+      const dataBlob = new Blob([dataStr], {type: 'application/json'});
+      const url = URL.createObjectURL(dataBlob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'cnc-calculator-settings.json';
+      link.click();
+      
+      URL.revokeObjectURL(url);
+      showNotification('Settings exported successfully!', 'success');
+    }
+
+    // Import settings
+    function importSettingsData() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.json';
+      
+      input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            try {
+              const settings = JSON.parse(e.target.result);
+              
+              // Apply imported settings to form
+              Object.keys(settings).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                  if (element.type === 'checkbox') {
+                    element.checked = settings[key];
+                  } else {
+                    element.value = settings[key];
+                  }
+                }
+              });
+              
+              showNotification('Settings imported successfully!', 'success');
+            } catch (error) {
+              showNotification('Invalid settings file!', 'error');
+            }
+          };
+          reader.readAsText(file);
+        }
+      };
+      
+      input.click();
+    }
+
+    // Reset settings
+    function resetToDefaults() {
+      if (confirm('Are you sure you want to reset all settings to defaults?')) {
+        Object.keys(defaultSettings).forEach(key => {
+          const element = document.getElementById(key);
+          if (element) {
+            if (element.type === 'checkbox') {
+              element.checked = defaultSettings[key];
+            } else {
+              element.value = defaultSettings[key];
+            }
+          }
+        });
+        
+        localStorage.removeItem('cncCalculatorSettings');
+        showNotification('Settings reset to defaults!', 'success');
+      }
+    }
+
+    // Event listeners
+    settingsBtn.addEventListener('click', () => {
+      settingsModal.classList.remove('hidden');
+      loadSettings();
+    });
+
+    closeSettings.addEventListener('click', () => {
+      settingsModal.classList.add('hidden');
+    });
+
+    cancelSettings.addEventListener('click', () => {
+      settingsModal.classList.add('hidden');
+    });
+
+    saveSettings.addEventListener('click', () => {
+      saveSettings();
+      settingsModal.classList.add('hidden');
+    });
+
+    resetSettings.addEventListener('click', resetToDefaults);
+    exportSettings.addEventListener('click', exportSettingsData);
+    importSettings.addEventListener('click', importSettingsData);
+
+    // Close modal when clicking outside
+    settingsModal.addEventListener('click', (e) => {
+      if (e.target === settingsModal) {
+        settingsModal.classList.add('hidden');
+      }
+    });
+
+    // Load initial settings
+    const currentSettings = loadSettings();
+    applySettings(currentSettings);
+  }
+
+  // Helper function to update button states
+  function updateButtonStates() {
+    const selectedTool = document.getElementById('tool_type').value;
+    const selectedMaterial = document.getElementById('material').value;
+    const selectedToolMaterial = document.querySelector('input[name="tool_material"]').value;
+
+    // Update tool type buttons
+    document.querySelectorAll('.tool-type-btn').forEach(btn => {
+      if (btn.dataset.value === selectedTool) {
+        btn.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        btn.classList.add('bg-green-600', 'border-green-500', 'text-white');
+      } else {
+        btn.classList.remove('bg-green-600', 'border-green-500', 'text-white');
+        btn.classList.add('bg-gray-800', 'border-gray-700', 'text-gray-300');
+      }
+    });
+
+    // Update material buttons
+    document.querySelectorAll('.material-btn').forEach(btn => {
+      if (btn.dataset.value === selectedMaterial) {
+        btn.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        btn.classList.add('bg-green-600', 'border-green-500', 'text-white');
+      } else {
+        btn.classList.remove('bg-green-600', 'border-green-500', 'text-white');
+        btn.classList.add('bg-gray-800', 'border-gray-700', 'text-gray-300');
+      }
+    });
+
+    // Update tool material buttons
+    document.querySelectorAll('.tool-material-btn').forEach(btn => {
+      if (btn.dataset.value === selectedToolMaterial) {
+        btn.classList.remove('bg-gray-800', 'border-gray-700', 'text-gray-300');
+        btn.classList.add('bg-green-600', 'border-green-500', 'text-white');
+      } else {
+        btn.classList.remove('bg-green-600', 'border-green-500', 'text-white');
+        btn.classList.add('bg-gray-800', 'border-gray-700', 'text-gray-300');
+      }
+    });
+  }
+
   // Button selector functionality
   function setupButtonSelectors() {
     // Tool type buttons
@@ -428,10 +1029,31 @@ window.addEventListener('DOMContentLoaded', function() {
       });
     });
 
+    // Material category expandable buttons
+    document.querySelectorAll('.category-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const category = this.dataset.category;
+        const subcategory = this.parentElement.querySelector('.material-subcategory');
+        const arrow = this.querySelector('svg');
+        
+        // Close all other categories
+        document.querySelectorAll('.material-subcategory').forEach(sub => {
+          if (sub !== subcategory) {
+            sub.classList.add('hidden');
+            sub.parentElement.querySelector('.category-btn svg').classList.remove('rotate-180');
+          }
+        });
+        
+        // Toggle current category
+        subcategory.classList.toggle('hidden');
+        arrow.classList.toggle('rotate-180');
+      });
+    });
+
     // Material buttons
     document.querySelectorAll('.material-btn').forEach(btn => {
       btn.addEventListener('click', function() {
-        // Remove active state from all buttons
+        // Remove active state from all material buttons
         document.querySelectorAll('.material-btn').forEach(b => {
           b.classList.remove('bg-green-600', 'border-green-500', 'text-white');
           b.classList.add('bg-gray-800', 'border-gray-700', 'text-gray-300');
@@ -475,62 +1097,12 @@ window.addEventListener('DOMContentLoaded', function() {
 
   // Setup button selectors
   setupButtonSelectors();
+  
+  // Setup settings
+  setupSettings();
 
-  // Update autoPopulateFields to work with new selectors
-  const originalAutoPopulate = autoPopulateFields;
-  autoPopulateFields = function() {
-    const material = document.getElementById('material').value;
-    const toolType = document.getElementById('tool_type').value;
-    const toolMaterial = document.querySelector('input[name="tool_material"]').value;
-    
-    // Show/hide special fields
-    document.getElementById('corner-radius-group').style.display = (toolType === 'Corner Radius Mill') ? '' : 'none';
-    document.getElementById('chamfer-angle-group').style.display = (toolType === 'Chamfer Mill') ? '' : 'none';
-    document.getElementById('thread-pitch-group').style.display = (toolType === 'Thread Mill') ? '' : 'none';
-    
-    // Debug logging
-    console.log('Tool type:', toolType);
-    console.log('Thread pitch group display:', document.getElementById('thread-pitch-group').style.display);
 
-    // Rest of the function remains the same
-    const mat = MATERIAL_DATA[material] || {vc: '', fz: ''};
-    const tool = TOOL_TYPES[toolType] || {recommended_ap_ratio: '', recommended_ae_ratio: '', default_flutes: ''};
-    const mult = TOOL_MATERIAL_MULTIPLIERS[toolMaterial] || {vc: 1, fz: 1};
-    
-    document.getElementById('vc').value = mat.vc ? (mat.vc * mult.vc).toFixed(3) : '';
-    document.getElementById('fz').value = mat.fz ? (mat.fz * mult.fz).toFixed(3) : '';
-    document.getElementById('flutes').value = tool.default_flutes;
-    const toolDiameter = parseFloat(document.getElementById('tool_diameter').value) || 0;
 
-    // Tool type-specific logic
-    if (toolType === 'Face Mill') {
-      document.getElementById('ap').value = toolDiameter ? (0.1 * toolDiameter).toFixed(3) : '';
-      document.getElementById('ae').value = toolDiameter ? (1.0 * toolDiameter).toFixed(3) : '';
-    } else if (toolType === 'Ball Mill') {
-      document.getElementById('ap').value = toolDiameter ? (0.6 * toolDiameter).toFixed(3) : '';
-      document.getElementById('ae').value = toolDiameter ? (0.4 * toolDiameter).toFixed(3) : '';
-    } else if (toolType === 'Drill') {
-      document.getElementById('ap').value = toolDiameter ? (2.0 * toolDiameter).toFixed(3) : '';
-      document.getElementById('ae').value = toolDiameter ? (1.0 * toolDiameter).toFixed(3) : '';
-      document.getElementById('flutes').value = 2;
-    } else if (toolType === 'Chamfer Mill') {
-      document.getElementById('ap').value = '';
-      document.getElementById('ae').value = '';
-    } else if (toolType === 'Corner Radius Mill') {
-      const radius = parseFloat(document.getElementById('corner_radius').value) || 0;
-      document.getElementById('ap').value = radius ? (0.5 * radius).toFixed(3) : '';
-      document.getElementById('ae').value = radius ? (0.5 * radius).toFixed(3) : '';
-    } else if (toolType === 'Thread Mill') {
-      // Don't clear ap and ae for Thread Mill - let user enter them manually
-      // Only set default flutes if not already set
-      if (!document.getElementById('flutes').value) {
-        document.getElementById('flutes').value = 3;
-      }
-    } else {
-      document.getElementById('ap').value = toolDiameter ? (tool.recommended_ap_ratio * toolDiameter).toFixed(3) : '';
-      document.getElementById('ae').value = toolDiameter ? (tool.recommended_ae_ratio * toolDiameter).toFixed(3) : '';
-    }
-  };
 
   // Event listeners for other fields
   document.getElementById('tool_diameter').addEventListener('input', autoPopulateFields);
@@ -542,6 +1114,16 @@ window.addEventListener('DOMContentLoaded', function() {
   setTimeout(() => {
     autoPopulateFields();
     console.log('Initial autoPopulateFields called');
+    
+    // Auto-expand Aluminum category and select first material by default
+    const aluminumCategory = document.querySelector('[data-category="aluminum"]');
+    if (aluminumCategory) {
+      aluminumCategory.click();
+      const firstMaterial = aluminumCategory.parentElement.querySelector('.material-btn');
+      if (firstMaterial) {
+        firstMaterial.click();
+      }
+    }
   }, 100);
 });
 </script>
