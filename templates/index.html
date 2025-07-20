@@ -52,24 +52,24 @@
         </div>
       </div>
       
-      <!-- Work Material Group -->
+      <!-- Work Material Group (Categorized) -->
       <div class="w-full">
         <label class="block text-gray-300 mb-2 flex items-center gap-1">Work Material
           <span class="relative group cursor-pointer">
             <svg class="w-4 h-4 text-blue-400 inline" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zm-8-3a1 1 0 100-2 1 1 0 000 2zm2 7a1 1 0 01-2 0v-1a1 1 0 012 0v1zm-1-3a1 1 0 00-1 1v1a1 1 0 002 0v-1a1 1 0 00-1-1z"/></svg>
-            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The material you are machining.</span>
+            <span class="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition pointer-events-none z-10 text-center">The material you are machining. Select a category, then a specific material.</span>
           </span>
         </label>
-        <div class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
-          {% for m in materials %}
-          <button type="button" 
-                  class="material-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-medium bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700 hover:border-gray-600"
-                  data-value="{{ m }}">
-            {{ m }}
-          </button>
-          {% endfor %}
+        <div class="mb-1">
+          <span class="block text-xs text-gray-400 mb-1">Select Material Category:</span>
+          <div id="material-categories" class="grid grid-cols-2 gap-2 mb-2"></div>
         </div>
-        <input type="hidden" id="material" name="material" value="{{ materials[0] if materials else '' }}">
+        <div class="my-2 border-t border-gray-700"></div>
+        <div class="mb-1">
+          <span class="block text-xs text-gray-400 mb-1">Select Material:</span>
+          <div id="material-options" class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto"></div>
+        </div>
+        <input type="hidden" id="material" name="material" value="">
       </div>
       <!-- Cutting Parameters Group -->
       <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -541,6 +541,81 @@ window.addEventListener('DOMContentLoaded', function() {
     autoPopulateFields();
     console.log('Initial autoPopulateFields called');
   }, 100);
+});
+
+// Categorized material data
+const MATERIAL_CATEGORIES = {
+  "Mild Steels": ["Mild Steel (EN1A)", "Mild Steel (EN8)", "Mild Steel (EN24)", "Tool Steel (D2)", "Tool Steel (O1)"],
+  "Stainless Steels": ["Stainless Steel (304)", "Stainless Steel (316)", "17-4 PH Stainless"],
+  "Aluminum Alloys": ["Aluminum (6061)", "Aluminum (7075)"],
+  "Titanium Alloys": ["Titanium (Grade 2)", "Titanium (Grade 5)"],
+  "Copper Alloys": ["Brass", "Bronze"],
+  "Superalloys": ["Inconel"],
+  "Cast Irons": ["Cast Iron"]
+};
+
+function renderMaterialCategories() {
+  const catDiv = document.getElementById('material-categories');
+  catDiv.innerHTML = '';
+  Object.keys(MATERIAL_CATEGORIES).forEach(cat => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'material-category-btn p-3 rounded-xl border-2 transition-all duration-200 text-xs font-semibold bg-blue-900 border-blue-500 text-blue-100 hover:bg-blue-800 hover:border-blue-400 shadow-md';
+    btn.textContent = cat;
+    btn.dataset.value = cat;
+    btn.onclick = function() { renderMaterialOptions(cat); highlightCategory(cat); };
+    catDiv.appendChild(btn);
+  });
+}
+function renderMaterialOptions(category) {
+  const matDiv = document.getElementById('material-options');
+  matDiv.innerHTML = '';
+  MATERIAL_CATEGORIES[category].forEach(mat => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'material-btn p-3 rounded-xl border border-gray-600 transition-all duration-200 text-xs font-medium bg-gray-800 text-gray-200 hover:bg-gray-700 hover:border-gray-400';
+    btn.textContent = mat;
+    btn.dataset.value = mat;
+    btn.onclick = function() { selectMaterial(mat); highlightMaterial(mat); };
+    matDiv.appendChild(btn);
+  });
+}
+function selectMaterial(mat) {
+  document.getElementById('material').value = mat;
+  autoPopulateFields();
+}
+function highlightCategory(cat) {
+  document.querySelectorAll('.material-category-btn').forEach(btn => {
+    if (btn.dataset.value === cat) {
+      btn.classList.remove('bg-blue-900', 'border-blue-500', 'text-blue-100');
+      btn.classList.add('bg-green-600', 'border-green-500', 'text-white');
+    } else {
+      btn.classList.remove('bg-green-600', 'border-green-500', 'text-white');
+      btn.classList.add('bg-blue-900', 'border-blue-500', 'text-blue-100');
+    }
+  });
+}
+function highlightMaterial(mat) {
+  document.querySelectorAll('.material-btn').forEach(btn => {
+    if (btn.dataset.value === mat) {
+      btn.classList.remove('bg-gray-800', 'border-gray-600', 'text-gray-200');
+      btn.classList.add('bg-green-600', 'border-green-500', 'text-white');
+    } else {
+      btn.classList.remove('bg-green-600', 'border-green-500', 'text-white');
+      btn.classList.add('bg-gray-800', 'border-gray-600', 'text-gray-200');
+    }
+  });
+}
+// On page load, render categories and select the first by default
+window.addEventListener('DOMContentLoaded', function() {
+  renderMaterialCategories();
+  const firstCat = Object.keys(MATERIAL_CATEGORIES)[0];
+  renderMaterialOptions(firstCat);
+  highlightCategory(firstCat);
+  // Select first material by default
+  const firstMat = MATERIAL_CATEGORIES[firstCat][0];
+  selectMaterial(firstMat);
+  highlightMaterial(firstMat);
 });
 </script>
 {% endblock %}
