@@ -375,10 +375,9 @@ function autoPopulateFields() {
     document.getElementById('ap').value = '';
     document.getElementById('ae').value = '';
   } else if (toolType === 'Corner Radius Mill') {
-    const radius = parseFloat(document.getElementById('corner_radius').value) || 0;
-    document.getElementById('ap').value = radius ? (0.5 * radius).toFixed(3) : '';
-    document.getElementById('ae').value = radius ? (0.5 * radius).toFixed(3) : '';
-      } else if (toolType === 'Thread Mill') {
+    document.getElementById('ap').value = toolDiameter ? (tool.recommended_ap_ratio * toolDiameter).toFixed(3) : '';
+    document.getElementById('ae').value = toolDiameter ? (tool.recommended_ae_ratio * toolDiameter).toFixed(3) : '';
+  } else if (toolType === 'Thread Mill') {
       // Don't clear ap and ae for Thread Mill - let user enter them manually
       // Only set default flutes if not already set
       if (!document.getElementById('flutes').value) {
@@ -517,9 +516,8 @@ window.addEventListener('DOMContentLoaded', function() {
       document.getElementById('ap').value = '';
       document.getElementById('ae').value = '';
     } else if (toolType === 'Corner Radius Mill') {
-      const radius = parseFloat(document.getElementById('corner_radius').value) || 0;
-      document.getElementById('ap').value = radius ? (0.5 * radius).toFixed(3) : '';
-      document.getElementById('ae').value = radius ? (0.5 * radius).toFixed(3) : '';
+      document.getElementById('ap').value = toolDiameter ? (tool.recommended_ap_ratio * toolDiameter).toFixed(3) : '';
+      document.getElementById('ae').value = toolDiameter ? (tool.recommended_ae_ratio * toolDiameter).toFixed(3) : '';
     } else if (toolType === 'Thread Mill') {
       // Don't clear ap and ae for Thread Mill - let user enter them manually
       // Only set default flutes if not already set

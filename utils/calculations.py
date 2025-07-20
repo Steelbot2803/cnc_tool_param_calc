@@ -158,9 +158,10 @@ def calculate_all(
     material_factor = 1.0  # Could be refined per material
 
     # Tool type-specific logic for ap/ae
-    if tool_type == 'Corner Radius Mill' and corner_radius is not None:
-        ap = min(ap, corner_radius)
-        ae = min(ae, corner_radius)
+    # REMOVED: ap and ae should not be capped to corner radius for Corner Radius Mill
+    # if tool_type == 'Corner Radius Mill' and corner_radius is not None:
+    #     ap = min(ap, corner_radius)
+    #     ae = min(ae, corner_radius)
     if tool_type == 'Chamfer Mill' and chamfer_angle is not None and ae > 0:
         ap = ae * math.tan(math.radians(chamfer_angle / 2))
     if tool_type == 'Thread Mill' and thread_pitch is not None:
