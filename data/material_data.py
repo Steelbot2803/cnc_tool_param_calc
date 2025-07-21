@@ -14,5 +14,11 @@ MATERIAL_DATA = {
     "Cast Iron": {"vc": 90, "fz": 0.1},
     "Tool Steel (D2)": {"vc": 40, "fz": 0.06},
     "Tool Steel (O1)": {"vc": 45, "fz": 0.07},
-    "Inconel": {"vc": 20, "fz": 0.03}
+    "Inconel": {"vc": 20, "fz": 0.03},
+    "ABS Plastic": {"vc": 300, "fz": 0.15},
+    "Polycarbonate": {"vc": 250, "fz": 0.12},
+    "Acrylic": {"vc": 350, "fz": 0.20},
+    "HDPE": {"vc": 400, "fz": 0.25},
+    "MDF": {"vc": 250, "fz": 0.20},
+    "Plywood": {"vc": 200, "fz": 0.18}
 }
