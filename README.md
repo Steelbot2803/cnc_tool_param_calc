@@ -68,8 +68,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 - Start the Flask app
 python app.py
-
-Visit http://localhost:5000 in your browser.
+- Visit http://localhost:5000 in your browser.
 
 ---
 
