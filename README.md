@@ -32,7 +32,7 @@ A full-featured Progressive Web App (PWA) built with **Flask** and **Vanilla HTM
 ---
 
 ## 📁 Project Structure
-
+```
 cnc_tool_param_calc/
 ├── app.py # Flask backend
 ├── templates/
@@ -53,23 +53,20 @@ cnc_tool_param_calc/
 │ └── assetlinks.json # Android TWA support
 ├── requirements.txt # Python dependencies
 └── README.md # This file!
-
+```
 ---
 
 ## ⚙️ Getting Started
 
-# Clone the repository
+- Clone the repository
 git clone https://github.com/Steelbot2803/cnc_tool_param_calc.git
 cd cnc_tool_param_calc
-
-# (Optional) Create and activate virtual environment
+- (Optional) Create and activate virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+- Install dependencies
 pip install -r requirements.txt
-
-# Start the Flask app
+- Start the Flask app
 python app.py
 
 Visit http://localhost:5000 in your browser.
