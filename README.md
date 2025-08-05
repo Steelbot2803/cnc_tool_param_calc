@@ -82,10 +82,10 @@ python app.py
 ## ⚠️ GitHub Pages requires external backend
 
 📱 Android Trusted Web Activity (TWA) Support
-Want to publish this on the Play Store? TWA makes it possible.
-Place assetlinks.json inside /.well-known/
-Use Bubblewrap or PWABuilder to generate an APK
-Replace the SHA256 certificate and package name in assetlinks.json
+- Want to publish this on the Play Store? TWA makes it possible.
+- Place assetlinks.json inside /.well-known/
+- Use Bubblewrap or PWABuilder to generate an APK
+- Replace the SHA256 certificate and package name in assetlinks.json
 
 ---
 
