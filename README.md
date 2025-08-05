@@ -1,79 +1,103 @@
-# CNC Tool Parameter Calculator
+# 🛠️ CNC Tool Parameter Calculator
 
-A Progressive Web App (PWA) for calculating and comparing CNC machining parameters across tool types and materials. Includes tool life estimation, force and power predictions, export to PDF, and beginner-to-expert profiles.
+A full-featured Progressive Web App (PWA) built with **Flask** and **Vanilla HTML/JS**, designed to calculate, compare, and optimize CNC machining parameters for various tools and materials. Includes advanced cutting force and power predictions, tool life estimation, surface finish metrics, and PDF export — all packaged in a clean, mobile-friendly UI.
 
-## 🌐 Live App
-
-[https://your-app-url.com](https://your-app-url.com)
-
-## 📦 Features
-
-* Tool selection: Drill, Endmill, Ball mill, Face mill, Corner mill
-* Material support: Steel (EN24, EN8, etc.), Aluminum (6061, 7075), Titanium, Stainless, Inconel, and more
-* Tool material options: Carbide, HSS, Coated variants
-* Force & power estimation
-* Tool life calculator with safety constraints
-* User Profiles: Beginner → Expert
-* PDF report export (basic & detailed)
-* PWA: Mobile installable, offline-first
-* Fully responsive dark UI
-
-## 📁 Project Structure
-
-```
-├── app.py                  # Flask app logic
-├── templates/
-│   ├── base.html           # Shared layout
-│   └── index.html          # UI form
-├── static/
-│   ├── manifest.json       # PWA manifest
-│   ├── service-worker.js   # PWA offline support
-│   ├── icon-192.png        # App icon (192px)
-│   └── icon-512.png        # App icon (512px)
-├── utils/
-│   ├── pdf_generator.py    # PDF export logic
-│   └── calculations.py     # Core formulas
-├── data/
-│   ├── material_data.py    # Material Vc and fz presets
-│   └── tool_types.py       # Tool type config
-├── .well-known/
-│   └── assetlinks.json     # Android TWA support
-├── requirements.txt        # Python dependencies
-└── README.md
-```
-
-## ⚙️ Setup & Run
-
-```bash
-# Clone the repo
-$ git clone https://github.com/yourname/cnc-tool-param-calc
-$ cd cnc-tool-param-calc
-
-# (Optional) Create virtual env
-$ python -m venv venv && source venv/bin/activate
-
-# Install dependencies
-$ pip install -r requirements.txt
-
-# Run the app
-$ python app.py
-```
-
-## 🚀 Deployment
-
-* PWA ready — no extra setup needed
-* Host on Render, GitHub Pages + Flask backend, or Firebase Hosting + Cloud Run
-
-## 📱 TWA / Android Support
-
-* Host `assetlinks.json` under `/.well-known/`
-* Package via [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) or TWA Builder
-* Replace package name and SHA key in assetlinks
-
-## 📃 License
-
-MIT
+> 💡 Perfect for machinists, manufacturing engineers, and mechanical design enthusiasts who need quick, accurate machining calculations.
 
 ---
 
-Built with ❤️ for machinists, engineers, and curious learners.
+## 🌐 Live App
+
+🔗 [https://cnc-tool-param-calc.onrender.com](https://cnc-tool-param-calc.onrender.com)  
+> *(Hosted on Render. Fully PWA-ready for mobile installability.)*
+
+---
+
+## ✨ Features
+
+- 🔧 **Tool Types**: Drill, Endmill, Face Mill, Ball Mill, Corner Radius Endmill  
+- 🧱 **Material Database**:  
+  - Steels: EN8, EN24, Mild Steel  
+  - Aluminum: 6061, 7075  
+  - Others: Stainless Steel, Titanium, Inconel  
+- ⚙️ **Tool Materials**: HSS, Carbide, Coated Carbide (e.g., TiN, TiAlN)  
+- 📐 **Smart Calculations**:  
+  - Cutting Force & Power Estimation  
+  - Tool Life Prediction (Taylor’s Equation)  
+  - Surface Finish (Ra) Estimator  
+- 📄 **PDF Export**: Generate detailed or basic machining parameter reports  
+- 🌓 **Offline-First PWA**: Works without internet once loaded  
+- 🖥️ **Responsive Dark UI**: Optimized for desktop and mobile
+
+---
+
+## 📁 Project Structure
+
+cnc_tool_param_calc/
+├── app.py # Flask backend
+├── templates/
+│ ├── base.html # Shared HTML layout
+│ └── index.html # Main frontend form
+├── static/
+│ ├── manifest.json # PWA manifest
+│ ├── service-worker.js # Offline support
+│ ├── icon-192.png # App icon (192px)
+│ └── icon-512.png # App icon (512px)
+├── utils/
+│ ├── pdf_generator.py # PDF export logic
+│ └── calculations.py # Machining formulas
+├── data/
+│ ├── material_data.py # Material cutting data
+│ └── tool_types.py # Tool config presets
+├── .well-known/
+│ └── assetlinks.json # Android TWA support
+├── requirements.txt # Python dependencies
+└── README.md # This file!
+
+---
+
+## ⚙️ Getting Started
+
+# Clone the repository
+git clone https://github.com/Steelbot2803/cnc_tool_param_calc.git
+cd cnc_tool_param_calc
+
+# (Optional) Create and activate virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start the Flask app
+python app.py
+
+Visit http://localhost:5000 in your browser.
+
+---
+
+## 🚀 Deployment Options
+- Render (zero-config for Flask apps)
+- Firebase Hosting + Cloud Run
+- Docker / VPS
+
+---
+
+## ⚠️ GitHub Pages requires external backend
+
+📱 Android Trusted Web Activity (TWA) Support
+Want to publish this on the Play Store? TWA makes it possible.
+Place assetlinks.json inside /.well-known/
+Use Bubblewrap or PWABuilder to generate an APK
+Replace the SHA256 certificate and package name in assetlinks.json
+
+---
+
+## 📄 License
+This project is licensed under the MIT License. See LICENSE for details.
+
+---
+
+## 🙌 Credits
+Built with ❤️ by Siddharth Kumar Ananda Kumar
+For engineers, machinists, and curious makers everywhere.
